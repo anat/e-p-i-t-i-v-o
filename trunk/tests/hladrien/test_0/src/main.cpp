@@ -8,7 +8,7 @@
 int main (int /*argc*/, char** /*argv*/)
 { 
 	// necessaire pour ecrire l'img
-	const string 		imgCaptureFilename = "capture.jpeg";
+	const std::string 		imgCaptureFilename = "capture.jpeg";
 	//const vector<int> 	imgCaptureParams = new vector<int>();
 
 	// open the default camera
