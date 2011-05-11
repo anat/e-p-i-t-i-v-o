@@ -1,6 +1,6 @@
 #include "filters.h"
 
-void filter_negative(IplImage* frame)
+void filter_negative(IplImage *frame)
 {
   unsigned char *ptr = (unsigned char *) frame->imageData;
   int i, size = frame->width * frame->height * frame->nChannels;
@@ -13,7 +13,7 @@ void filter_negative(IplImage* frame)
     }
 }
 
-void filter_grayscale(IplImage* frame)
+void filter_grayscale(IplImage *frame)
 {
   unsigned char *ptr = (unsigned char *) frame->imageData;
   int i, size = frame->width * frame->height * frame->nChannels;
@@ -27,7 +27,7 @@ void filter_grayscale(IplImage* frame)
     }
 }
 
-void apply_filter(IplImage* frame, int filter, bool apply)
+void apply_filter(IplImage *frame, int filter, bool apply)
 {
   if (apply == true)
     {
@@ -35,5 +35,7 @@ void apply_filter(IplImage* frame, int filter, bool apply)
 	filter_negative(frame);
       else if (filter == FT_GRAYSCALE)
 	filter_grayscale(frame);
+      else if (filter == FT_DOWNSAMPLING)
+	filter_downsampling(frame);
     }
 }

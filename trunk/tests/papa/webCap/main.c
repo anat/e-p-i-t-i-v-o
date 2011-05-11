@@ -1,6 +1,7 @@
 #include "filters.h"
 #include <stdio.h>
 #include <unistd.h>
+#include <fenv.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
@@ -29,6 +30,7 @@ int main()
   IplImage* frame;
   char c;
   bool negative = false, grayscale = false;
+  bool downsampling = false;
 
   if(!(capture = cvCaptureFromCAM(CV_CAP_ANY)))
     error_msg("Error: cannot start capture.\n", true);
@@ -37,6 +39,7 @@ int main()
   
   frame = cvQueryFrame(capture);
   display_capture_infos(frame);
+  fesetround(FE_TOWARDZERO);
 
   while(true)
     {
@@ -45,6 +48,7 @@ int main()
 
       apply_filter(frame, FT_NEGATIVE, negative);
       apply_filter(frame, FT_GRAYSCALE, grayscale);
+      apply_filter(frame, FT_DOWNSAMPLING, downsampling);
 
       cvShowImage(WIN_TITLE, frame);
       
@@ -54,6 +58,8 @@ int main()
 	negative = (negative == true) ? false : true;
       else if(c == 'i')
 	grayscale = (grayscale == true) ? false : true;
+      else if(c == 'd')
+	downsampling = (downsampling == true) ? false : true;
     }
 
   cvReleaseCapture(&capture);
