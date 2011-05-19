@@ -1,53 +1,54 @@
-
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 project( app )
-
-add_definitions( -Wall -W )
 
 find_package( Qt4 	REQUIRED )
 # find_package( OpenCV 	REQUIRED )
 
 SET(APP_NAME app)
 
-SET(app_SOURCES 
+SET(APP_HEADERS
+)
+SET(APP_MOC_HEADERS 
+	includes/mainwindow.h
+)
+SET(APP_SOURCES 
 	sources/main.cpp 
 	sources/mainwindow.cpp
 )
-# header needing moc only !!
-SET(app_HEADERS 
-	mainwindow.h
-)
-SET(app_FORMS 
+SET(APP_FORMS 
 	# hellowindow.ui
 )
-SET(app_RESOURCES 
-	application.qrc
+SET(APP_RESOURCES 
+	resources/app.qrc
 )
+SET(QT_USE_QTCORE	TRUE)
+SET(QT_USE_QTGUI 	TRUE)
 
-QT4_WRAP_CPP(app_HEADERS_MOC ${test_qt_HEADERS})
-QT4_WRAP_UI(app_FORMS_HEADERS ${test_qt_FORMS})
-QT4_ADD_RESOURCES(app_RESOURCES_RCC ${test_qt_RESOURCES})
-
-# set your module use
- #SET(QT_USE_QTCORE	TRUE)
-#SET(QT_USE_QTGUI	TRUE)
-SET(QT_DONT_USE_QTCORE FALSE)
-SET(QT_DONT_USE_QTGUI FALSE)
-INCLUDE(${QT_USE_FILE})
+QT4_WRAP_CPP(MOC_GENERATED 	${APP_MOC_HEADERS})
+QT4_WRAP_UI(FORMS_GENERATED 	${APP_FORMS})
+QT4_ADD_RESOURCES(RC_GENERATED 	${APP_RESOURCES})
 
 INCLUDE_DIRECTORIES(
-        headers
-	${QT_INCLUDE_DIR}
+       	includes
+       	${CMAKE_CURRENT_BINARY_DIR}
+        
+	#${QT_INCLUDE_DIR}
 )
-SET(QT_DEFINITIONS) 
-ADD_DEFINITIONS(${QT_DEFINITIONS})
+
+INCLUDE(${QT_USE_FILE})
+
+ADD_DEFINITIONS(
+	${QT_DEFINITIONS} 
+	-W -Wall 
+)
 
 add_executable(${APP_NAME}
-	${app_SOURCES}
-	${app_HEADERS_MOC}
-	${app_FORMS_HEADERS}
-	${app_RESOURCES_RCC}
+	${APP_SOURCES}
+	${APP_HEADERS}
+	${APP_FORMS}		${FORMS_GENERATED}
+	${APP_MOC_HEADERS}	${MOC_GENERATED}
+	${APP_RESOURCES}	${RC_GENERATED}
 )
 
 target_link_libraries(${APP_NAME}
@@ -55,7 +56,10 @@ target_link_libraries(${APP_NAME}
 	${QT_LIBRARIES}
 )
 
-message(STATUS "QT_INCLUDE_DIR : " ${QT_INCLUDE_DIR})
-message(STATUS "QT_USE_FILE : " ${QT_USE_FILE})
-message(STATUS "QT_DEFINITIONS : " ${QT_DEFINITIONS})
-message(STATUS "QT_LIBRARIES : " ${QT_LIBRARIES})
+#message(STATUS "QT_INCLUDE_DIR : " ${QT_INCLUDE_DIR})
+#message(STATUS "QT_USE_FILE : " ${QT_USE_FILE})
+#message(STATUS "QT_DEFINITIONS : " ${QT_DEFINITIONS})
+#message(STATUS "QT_LIBRARIES : " ${QT_LIBRARIES})
+#message(STATUS "QT_QTCORE_LIBRARIES : " ${QT_QTCORE_LIBRARIES})
+#message(STATUS "QT_QTGUI_LIBRARIES : " ${QT_QTGUI_LIBRARIES})
+#message(STATUS "QT_QTGUI_LIBRARY_DIR : " ${QT_LIBRARY_DIR})
