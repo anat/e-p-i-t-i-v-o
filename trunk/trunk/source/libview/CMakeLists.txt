@@ -2,22 +2,18 @@ SET(lib_name view)
 
 SET(headers
 )
-
 SET(moc_headers
 	MainWindow.hpp
 	CentralView.hpp
 )
-
 SET(sources
 	MainWindow.cpp
 	CentralView.cpp
 )
-
 SET(forms
 	MainWindow.ui
 	CentralView.ui
 )
-
 SET(resources
 	resources.qrc
 )
@@ -38,13 +34,12 @@ SOURCE_GROUP("RC Files" REGULAR_EXPRESSION ".*.qrc$")
 INCLUDE(${QT_USE_FILE})
 
 ADD_LIBRARY(${lib_name} 
-	${headers} ${moc_headers} ${sources} ${forms} ${moc_generated} ${forms_generated} ${rc_generated})
-
+	${headers} ${moc_headers} ${sources} ${forms} ${moc_generated} ${forms_generated} ${rc_generated}
+)
 SET_TARGET_PROPERTIES(${lib_name} 
-	PROPERTIES PROJECT_LABEL "libview")
-
+	PROPERTIES PROJECT_LABEL "libview"
+)
 TARGET_LINK_LIBRARIES(${lib_name} 
-	#model 
 	#modelview 
 	${QT_LIBRARIES}
 )
