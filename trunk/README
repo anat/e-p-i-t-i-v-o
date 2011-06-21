@@ -1,8 +1,9 @@
 == Build
  
   Pour compiler le tout, c'est du cmake c'est juste : cmake . && make dans ce dossier.
+  L'exec se est build dans le dossier courant.
 
 
 == Clean
 
-* Clean all : python helper.py cmake ca
+* Clean all : python helper.py cmake ca [faire un alias]

@@ -10,6 +10,9 @@ GUILoader::GUILoader(int & argc, char ** argv) :
 	Q_INIT_RESOURCE(resources);
 
 	_mainWindow = new MainWindow;
+
+  _mainVM = vm::MainWindowVM::GetInstance();
+  _centralVM = vm::CentralVM::GetInstance();
 }
 
 GUILoader::~GUILoader()

@@ -7,15 +7,20 @@ namespace vm
 {
   class MainWindowVM : public QObject
   {
-    Q_OBJECT
+    //TODO uncomment if slot + signals
+    //Q_OBJECT
 
     public:
-      MainWindowVM();
-      ~MainWindowVM();
+    static MainWindowVM* GetInstance();
+    static void DelInstance();
 
       public slots:
         signals:
+
     private:
+      MainWindowVM();
+      ~MainWindowVM();
+    static MainWindowVM* _instance;
   };
 }
 #endif // !__MAINWINDOWVM_HPP__

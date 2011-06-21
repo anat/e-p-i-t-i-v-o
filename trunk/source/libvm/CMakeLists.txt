@@ -2,9 +2,11 @@ SET(lib_name vm)
 
 SET(headers
 	MainWindowVM.hpp
+	CentralVM.hpp
 )
 SET(sources
 	MainWindowVM.cpp
+	CentralVM.cpp
 )
 
 INCLUDE_DIRECTORIES(

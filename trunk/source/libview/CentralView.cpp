@@ -5,10 +5,11 @@ CentralView::CentralView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CentralView)
 {
-    ui->setupUi(this);
+  ui->setupUi(this);
+  _dataContext = vm::CentralVM::GetInstance();
 }
 
 CentralView::~CentralView()
 {
-    delete ui;
+  delete ui;
 }

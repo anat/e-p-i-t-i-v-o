@@ -2,21 +2,26 @@
 #define CENTRALVIEW_HPP
 
 #include <QWidget>
+#include <QString>
+# include "libvm/CentralVM.hpp"
 
 namespace Ui {
-    class CentralView;
+  class CentralView;
 }
 
 class CentralView : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit CentralView(QWidget *parent = 0);
-    ~CentralView();
+  explicit CentralView(QWidget *parent = 0);
+  ~CentralView();
 
 private:
-    Ui::CentralView *ui;
+  Ui::CentralView *ui;
+
+  vm::CentralVM* _dataContext;
+
 };
 
 #endif // CENTRALVIEW_HPP
