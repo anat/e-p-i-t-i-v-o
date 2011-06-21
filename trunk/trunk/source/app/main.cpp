@@ -1,11 +1,20 @@
+#include <string>
+
 #include "GUILoader.hpp"
+#include "ConfigManager.hpp"
+
+using namespace vm;
+
+const std::string EpitivoConfFile = "epitivo.conf.xml";
 
 int main(int argc, char** argv)
 {
-	GUILoader gui(argc, argv);
+  //ConfigManager config(EpitivoConfFile);
+
+  GUILoader gui(argc, argv);
 
   gui.Show();
 
-	return gui.exec();
+  return gui.exec();
 }
 

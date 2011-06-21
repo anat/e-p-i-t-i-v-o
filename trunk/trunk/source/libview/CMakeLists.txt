@@ -5,14 +5,17 @@ SET(headers
 SET(moc_headers
 	MainWindow.hpp
 	CentralView.hpp
+        BottomBar.hpp
 )
 SET(sources
 	MainWindow.cpp
 	CentralView.cpp
+        BottomBar.cpp
 )
 SET(forms
 	MainWindow.ui
 	CentralView.ui
+        BottomBar.ui
 )
 SET(resources
 	resources.qrc
@@ -40,6 +43,6 @@ SET_TARGET_PROPERTIES(${lib_name}
 	PROPERTIES PROJECT_LABEL "libview"
 )
 TARGET_LINK_LIBRARIES(${lib_name} 
-	#modelview 
+  vm	
 	${QT_LIBRARIES}
 )

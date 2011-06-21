@@ -22,8 +22,9 @@ if argc > 2:
 
     if (sys.argv[2] == "ca"):
       cmdStatus,cmdOutput = commands.getstatusoutput("make clean")
-      print "Builds cleaned."
       cmdStatus,cmdOutput = commands.getstatusoutput("rm -rf source/bin")
+      print "Builds cleaned."
+      cmdStatus,cmdOutput = commands.getstatusoutput("rm -rf source/epitivo.dir")
       print "Bin cache cleaned."
       cmHelper.cleanTempFiles(CMakeRootDir+"/")
       cmHelper.cleanAll()
