@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QString>
+#include "CentralView.hpp"
 # include "libvm/CentralVM.hpp"
+#include "BottomBar.hpp"
 
 namespace Ui {
   class CentralView;
@@ -15,10 +17,12 @@ class CentralView : public QWidget
 
 public:
   explicit CentralView(QWidget *parent = 0);
-  ~CentralView();
+	  ~CentralView();
 
 private:
   Ui::CentralView *ui;
+
+  BottomBar*      _bottomBar;
 
   vm::CentralVM* _dataContext;
 

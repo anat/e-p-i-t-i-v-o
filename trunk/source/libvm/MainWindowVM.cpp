@@ -1,4 +1,5 @@
 #include "MainWindowVM.hpp"
+#include <iostream>
 
 namespace vm
 {
@@ -19,5 +20,10 @@ namespace vm
     if (_instance)
       delete _instance;
   }
+void MainWindowVM::openFile(QString const & filename)
+{
+
+	std::cout << "file :" << filename.toStdString();
+}
 
 }

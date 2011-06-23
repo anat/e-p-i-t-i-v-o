@@ -4,9 +4,10 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QDir>
-#include "CentralView.hpp"
+
 #include "BottomBar.hpp"
 #include "libvm/MainWindowVM.hpp"
+#include "CentralView.hpp"
 
 namespace Ui {
   class MainWindow;
@@ -29,7 +30,6 @@ private:
   vm::MainWindowVM* _dataContext;
 
   CentralView*    _centralView;
-  BottomBar*      _bottomBar;
 
   void setQtConnects();
 };

@@ -13,6 +13,7 @@ GUILoader::GUILoader(int & argc, char ** argv) :
 
   _mainVM = vm::MainWindowVM::GetInstance();
   _centralVM = vm::CentralVM::GetInstance();
+  _bottomVM = vm::BottomBarVM::GetInstance();
 }
 
 GUILoader::~GUILoader()
