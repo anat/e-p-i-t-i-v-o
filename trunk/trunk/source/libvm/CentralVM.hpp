@@ -18,6 +18,7 @@ namespace vm
     void LoadFile(QString const &);
 
   public slots:
+	
   signals:
 
   private:

@@ -2,6 +2,7 @@
 # define __MAINWINDOWVM_HPP__
 
 # include <QObject>
+# include <QString>
 
 namespace vm
 {
@@ -14,8 +15,10 @@ namespace vm
     static MainWindowVM* GetInstance();
     static void DelInstance();
 
-      public slots:
-        signals:
+    public slots:
+   	void openFile(QString const & filename);
+
+    signals:
 
     private:
       MainWindowVM();

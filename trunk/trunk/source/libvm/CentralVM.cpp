@@ -1,5 +1,4 @@
 #include "CentralVM.hpp"
-
 namespace vm
 {
   CentralVM *CentralVM::_instance = 0;

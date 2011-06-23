@@ -29,14 +29,10 @@ void MainWindow::openFile()
       homePath,
       tr("Images (*.png *.xpm *.jpg);;Videos (*.txt)")
       );
-
-
-  //if (!fileName.isEmpty())
-  //openFile(fileName);
+  _dataContext->openFile(fileName);
 }
 
 void MainWindow::setQtConnects()
 {
-
   connect(ui->actionOpen_file, SIGNAL(triggered()), this, SLOT(openFile()));
 }

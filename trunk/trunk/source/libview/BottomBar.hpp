@@ -3,20 +3,34 @@
 
 #include <QWidget>
 
+#include "libvm/BottomBarVM.hpp"
+
 namespace Ui {
     class BottomBar;
 }
 
 class BottomBar : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
+  public:
     explicit BottomBar(QWidget *parent = 0);
     ~BottomBar();
 
-private:
+    private slots:
+      void record();
+    void play();
+    void pause();
+    void stop();
+    void forward();
+    void backward();
+
+  private:
     Ui::BottomBar *ui;
+
+    vm::BottomBarVM* _dataContext;
+
+    void setQtConnects();
 };
 
 #endif // BOTTOMBAR_HPP

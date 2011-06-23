@@ -3,10 +3,12 @@ SET(lib_name vm)
 SET(headers
 	MainWindowVM.hpp
 	CentralVM.hpp
+	BottomBarVM.hpp
 )
 SET(sources
 	MainWindowVM.cpp
 	CentralVM.cpp
+	BottomBarVM.cpp
 )
 
 INCLUDE_DIRECTORIES(
