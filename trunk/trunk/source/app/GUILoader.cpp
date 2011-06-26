@@ -11,9 +11,9 @@ GUILoader::GUILoader(int & argc, char ** argv) :
 
 	_mainWindow = new MainWindow;
 
-  _mainVM = vm::MainWindowVM::GetInstance();
-  _centralVM = vm::CentralVM::GetInstance();
-  _bottomVM = vm::BottomBarVM::GetInstance();
+	_mainVM = vm::MainWindowVM::GetInstance();
+	_centralVM = vm::CentralVM::GetInstance();
+	_cameraVM = vm::CameraVM::GetInstance();
 }
 
 GUILoader::~GUILoader()

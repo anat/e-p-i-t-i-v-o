@@ -16,7 +16,7 @@ namespace vm
     static void DelInstance();
 
     public slots:
-   	void openFile(QString const & filename);
+   	bool openFile(QString const & filename);
 
     signals:
 

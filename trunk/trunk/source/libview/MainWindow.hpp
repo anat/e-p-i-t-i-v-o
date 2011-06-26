@@ -5,9 +5,9 @@
 #include <QFileDialog>
 #include <QDir>
 
-#include "BottomBar.hpp"
 #include "libvm/MainWindowVM.hpp"
 #include "CentralView.hpp"
+#include "CameraView.hpp"
 
 namespace Ui {
   class MainWindow;
@@ -23,15 +23,20 @@ public:
 
 private slots:
   void openFile();
+  void openDevice();
 
 private:
   Ui::MainWindow* ui;
 
-  vm::MainWindowVM* _dataContext;
+  vm::MainWindowVM* _vm;
 
   CentralView*    _centralView;
+  CameraView*    _cameraView;
 
   void setQtConnects();
+
+  CameraView* createCameraView();
+  CentralView* createCentralView();
 };
 
 #endif // MAINWINDOW_HPP

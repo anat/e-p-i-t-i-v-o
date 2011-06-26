@@ -5,17 +5,17 @@ SET(headers
 SET(moc_headers
 	MainWindow.hpp
 	CentralView.hpp
-        BottomBar.hpp
+        CameraView.hpp
 )
 SET(sources
 	MainWindow.cpp
 	CentralView.cpp
-        BottomBar.cpp
+        CameraView.cpp
 )
 SET(forms
 	MainWindow.ui
 	CentralView.ui
-        BottomBar.ui
+        CameraView.ui
 )
 SET(resources
 	resources.qrc

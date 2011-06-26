@@ -5,7 +5,6 @@
 #include <QString>
 #include "CentralView.hpp"
 # include "libvm/CentralVM.hpp"
-#include "BottomBar.hpp"
 
 namespace Ui {
   class CentralView;
@@ -21,8 +20,6 @@ public:
 
 private:
   Ui::CentralView *ui;
-
-  BottomBar*      _bottomBar;
 
   vm::CentralVM* _dataContext;
 
