@@ -17,7 +17,8 @@
 	* next go in release dir
 	* Do the cmake here from OpenCV source :
 		cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_PYTHON_SUPPORT=ON _open_cv_source_path_
-
-"" tool.sh
+	* make && make install
+	
+"" tool.sh = USELESS IF "make && make install" COMMANDS ARE DONE
 
 	Config you path for opencv DIR

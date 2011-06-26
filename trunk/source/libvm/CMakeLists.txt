@@ -3,12 +3,12 @@ SET(lib_name vm)
 SET(headers
 	MainWindowVM.hpp
 	CentralVM.hpp
-	BottomBarVM.hpp
+	CameraVM.hpp
 )
 SET(sources
 	MainWindowVM.cpp
 	CentralVM.cpp
-	BottomBarVM.cpp
+	CameraVM.cpp
 )
 
 INCLUDE_DIRECTORIES(
@@ -31,5 +31,6 @@ SET_TARGET_PROPERTIES(${lib_name}
 TARGET_LINK_LIBRARIES(${lib_name}
 	#model 
 	${QT_LIBRARIES}
+	${OpenCV_LIBS}
 )
 

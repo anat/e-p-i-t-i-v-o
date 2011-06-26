@@ -20,10 +20,12 @@ namespace vm
     if (_instance)
       delete _instance;
   }
-void MainWindowVM::openFile(QString const & filename)
-{
 
-	std::cout << "file :" << filename.toStdString();
-}
+  bool MainWindowVM::openFile(QString const & filename)
+  {
+	  bool ret = true;
+	  std::cout << "file :" << filename.toStdString();
 
+	  return ret;
+  }
 }

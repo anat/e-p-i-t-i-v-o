@@ -6,7 +6,7 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 # Set up the environment
 FIND_PACKAGE(Qt4 	REQUIRED)
-#FIND_PACKAGE(OpenCV 	REQUIRED)
+FIND_PACKAGE(OpenCV 	REQUIRED)
 
 # Handle all the code
 #ADD_SUBDIRECTORY(source/libmodel)
