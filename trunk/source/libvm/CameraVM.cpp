@@ -1,4 +1,5 @@
 #include "CameraVM.hpp"
+#include <iostream>
 namespace vm
 {
   CameraVM *CameraVM::_instance = 0;
@@ -8,7 +9,7 @@ namespace vm
     _cameras = 0;
     //_isFlip = false;
     _isStop  = true;
-    _breakCapture = true;
+    _isPaused  = false;
     //ui->containersFrame->setVisible(false);
   }
   CameraVM::~CameraVM()
@@ -29,45 +30,47 @@ namespace vm
       delete _instance;
   }
 
-  bool CameraVM::OpenDevice(QLabel *surface)
+  void CameraVM::mapSurface(QLabel *surface)
   {
-    bool ret = true;
-    _surface = surface;
-    //this->StartCam();
-    return ret;
+    _surface = surface;// no delete
   }
 
   void CameraVM::StartCam()
   {
-    if(!_isStop)
+    if(!_isStop || !_surface)
+    {
+      if (_isPaused)
+        _isPaused = false;
       return;
+    }
 
     _isStop = false;
-    _breakCapture = true;
-    //ui->btnCapture->setText("Stop");
     CvCapture* capture = cvCaptureFromCAM(_cameras);
-    if( !capture )
+    if(capture)
     {
-      return;
-    }
-    IplImage* frame = 0;
-    for(; _breakCapture;)
-    {
-      frame = cvQueryFrame( capture );
-      if( !frame )
-        break;
-      //if(_isFlip)
-       // cvFlip(frame, frame,1);
+      IplImage* frame = 0;
+      while(!_isStop)
+      {
+        if (_isStop)
+          break;
 
-      if (_isStop)
-        return;
+        if (!_isPaused) //TODO THREAD SLEEP
+        {
+          frame = cvQueryFrame( capture );
+          if(!frame)
+            break;
 
-      _iplImg = cvCloneImage(frame);
-      QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
-      _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
+          _iplImg = cvCloneImage(frame);
+          QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
+          _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
 
-      int t = cvWaitKey(40);
-    }
+          cvWaitKey(40);
+        }
+        else
+          cvWaitKey(500);
+      }
+      cvReleaseCapture(&capture);
+    } // ~capture
   }
 
   void CameraVM::StopCam()
@@ -75,8 +78,15 @@ namespace vm
     if (!_isStop)
     {
       _isStop = true;
-      _breakCapture = false;
-      //delete _surface;
+      _surface->clear();
+    }
+  }
+
+  void CameraVM::PauseCam()
+  {
+    if (!_isPaused)
+    {
+      _isPaused = true;
     }
   }
 
@@ -118,13 +128,22 @@ namespace vm
 
       }
     }
-
-    //QImage img = ConvertIplImgtoQBitmpat(cloneImg).scaled(this->size());
-    //ui->lbImage->setPixmap(QPixmap::fromImage(img).scaled(ui->lbImage->size()));
   }
 
-  void CameraVM::FlipImage()
+  void CameraVM::StartRecordCam()
   {
-    //_isFlip = ui->cbFlip->isChecked();
+
   }
+
+  void CameraVM::StopRecCam()
+  {
+
+  }
+
+  void CameraVM::PauseRecCam()
+  {
+
+  }
+
 }
+

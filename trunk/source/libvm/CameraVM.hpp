@@ -22,16 +22,19 @@ namespace vm
     static CameraVM* GetInstance();
     static void DelInstance();
 
-    bool OpenDevice(QLabel* surface);
+    void mapSurface(QLabel* surface);
 
     void StartCam();
     void StopCam();
+    void PauseCam();
 
     //void PauseCapture();
     //void StopCapture();
     void SliderChangeValue();
-    void FlipImage();
 
+    void StartRecordCam();
+    void StopRecCam();
+    void PauseRecCam();
 
   protected:
 
@@ -43,9 +46,8 @@ namespace vm
 
     IplImage* _iplImg;
     int _cameras;
-//    bool _isFlip;
     bool _isStop;
-    bool _breakCapture;
+    bool _isPaused;
 
     QLabel * _surface;
 

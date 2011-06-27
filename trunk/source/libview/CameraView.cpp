@@ -1,5 +1,6 @@
 #include "CameraView.hpp"
 #include "ui_CameraView.h"
+#include <iostream>
 
 CameraView::CameraView(QWidget *parent) :
     QWidget(parent),
@@ -7,12 +8,13 @@ CameraView::CameraView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-  ui->startCamBtn->setVisible(true);
-  ui->pauseCamBtn->setVisible(false);
+  ui->startCamRecBtn->setVisible(true);
+  ui->pauseCamRecBtn->setVisible(false);
 
   _vm = vm::CameraVM::GetInstance();
+  _vm->mapSurface(ui->imgBoxLabel);
 
-  this->setQtConnects();
+  this->setCameraConnects(true);
 }
 
 CameraView::~CameraView()
@@ -20,32 +22,71 @@ CameraView::~CameraView()
     delete ui;
 }
 
-void CameraView::setQtConnects()
+void CameraView::setCameraConnects(bool state)
 {
-  connect(ui->startCamBtn, SIGNAL(clicked()), this, SLOT(startCam()));
-  //connect(ui->pauseCamBtn, SIGNAL(clicked()), this, SLOT(pauseCam()));
-  connect(ui->stopCamBtn, SIGNAL(clicked()), this, SLOT(stopCam()));
+  if (state)
+  {
+    connect(ui->startCamRecBtn, SIGNAL(clicked()), 
+      this, SLOT(recordCam()));
+
+    connect(ui->stopCamRectBtn, SIGNAL(clicked()), 
+      this, SLOT(stopRecCam()));
+
+    connect(ui->pauseCamRecBtn, SIGNAL(clicked()), 
+      this, SLOT(pauseRecCam()));
+  }
+  else
+  {
+    // disconnects
+  }
 }
-
-bool CameraView::OpenDevice()
+void CameraView::StartCam()
 {
-  bool ret = true;
-
-  _vm->OpenDevice(ui->imgBoxLabel);
-  this->startCam();
-  return ret;
-}
-
-void CameraView::startCam()
-{
-  ui->startCamBtn->setVisible(false);
-  ui->pauseCamBtn->setVisible(true);
   _vm->StartCam();
 }
 
-void CameraView::stopCam()
+void CameraView::StopCam()
 {
-  ui->startCamBtn->setVisible(true);
-  ui->pauseCamBtn->setVisible(false);
   _vm->StopCam();
+}
+
+void CameraView::PauseCam()
+{
+  _vm->PauseCam();
+}
+
+void CameraView::setRecordingState()
+{
+    ui->startCamRecBtn->setVisible(false);
+    ui->pauseCamRecBtn->setVisible(true);
+}
+
+void CameraView::setPausedRecordingState()
+{
+    ui->startCamRecBtn->setVisible(true);
+    ui->pauseCamRecBtn->setVisible(false);
+}
+
+void CameraView::setStoppedRecordingState()
+{
+    ui->startCamRecBtn->setVisible(true);
+    ui->pauseCamRecBtn->setVisible(false);
+}
+
+void CameraView::recordCam()
+{
+  this->setRecordingState();
+  _vm->StartRecordCam();
+}
+
+void CameraView::stopRecCam()
+{
+  this->setStoppedRecordingState();
+  _vm->StopRecCam();
+}
+
+void CameraView::pauseRecCam()
+{
+  this->setPausedRecordingState();
+  _vm->PauseRecCam();
 }

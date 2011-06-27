@@ -2,9 +2,15 @@
 #define CENTRALVIEW_HPP
 
 #include <QWidget>
+#include <QFileDialog>
+#include <QDir>
 #include <QString>
+
+#include <iostream>
+
 #include "CentralView.hpp"
-# include "libvm/CentralVM.hpp"
+#include "libvm/CentralVM.hpp"
+#include "CameraView.hpp"
 
 namespace Ui {
   class CentralView;
@@ -14,14 +20,31 @@ class CentralView : public QWidget
 {
   Q_OBJECT
 
-public:
-  explicit CentralView(QWidget *parent = 0);
-	  ~CentralView();
+  public:
+    explicit CentralView(QWidget *parent = 0);
+    ~CentralView();
 
-private:
-  Ui::CentralView *ui;
+    public slots:
+      void OpenFile();
+    void OpenCameraDevice();
 
-  vm::CentralVM* _dataContext;
+  private slots:
+
+    void setPlayingMediaState();
+    void setPausedMediaState();
+    void setStoppedMediaState();
+
+  private:
+    Ui::CentralView *ui;
+
+    vm::CentralVM* _vm;
+
+    CameraView*   _cameraView;
+
+    void setCameraViewQtConnects(bool state);
+
+    CameraView* createCameraView();
+    void clearCameraView();
 
 };
 
