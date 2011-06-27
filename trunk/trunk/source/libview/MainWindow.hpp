@@ -2,12 +2,9 @@
 #define MAINWINDOW_HPP
 
 #include <QMainWindow>
-#include <QFileDialog>
-#include <QDir>
 
 #include "libvm/MainWindowVM.hpp"
 #include "CentralView.hpp"
-#include "CameraView.hpp"
 
 namespace Ui {
   class MainWindow;
@@ -17,26 +14,26 @@ class MainWindow : public QMainWindow
 {
   Q_OBJECT
 
-public:
-  explicit MainWindow(QWidget *parent = 0);
-  ~MainWindow();
+  public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 
-private slots:
-  void openFile();
-  void openDevice();
+  private slots:
+    void appExit();
 
-private:
-  Ui::MainWindow* ui;
+  private:
+    Ui::MainWindow* ui;
 
-  vm::MainWindowVM* _vm;
+    vm::MainWindowVM* _vm;
 
-  CentralView*    _centralView;
-  CameraView*    _cameraView;
+    CentralView*  _centralView;
 
-  void setQtConnects();
+    void setMainWindowConnects();
+    void setMenuConnects();
 
-  CameraView* createCameraView();
-  CentralView* createCentralView();
+    CentralView* createCentralView();
+    void clearCentralView();
+
 };
 
 #endif // MAINWINDOW_HPP

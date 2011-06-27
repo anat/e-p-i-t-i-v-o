@@ -12,23 +12,31 @@ namespace Ui {
 
 class CameraView : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
+  public:
     explicit CameraView(QWidget *parent = 0);
     ~CameraView();
 
-    bool OpenDevice();
+    public slots:
+      void StartCam();
+    void StopCam();
+    void PauseCam();
 
-private slots:
-void startCam();
-void stopCam();
+    private slots:
+    void recordCam();
+    void stopRecCam();
+    void pauseRecCam();
 
-private:
+  private:
     Ui::CameraView *ui;
-  vm::CameraVM* _vm;
+    vm::CameraVM* _vm;
 
-  void setQtConnects();
+    void setCameraConnects(bool state);
+
+      void setRecordingState();
+    void setPausedRecordingState();
+    void setStoppedRecordingState();
 };
 
 #endif // CAMERAVIEW_HPP

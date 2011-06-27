@@ -1,58 +1,41 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    _centralView(NULL),
-    _cameraView(NULL)
+    _vm(vm::MainWindowVM::GetInstance()),
+    _centralView(new CentralView)
 {
   ui->setupUi(this);
-  _vm = vm::MainWindowVM::GetInstance();
-  //this->setCentralWidget(_centralView);
+  
+  this->setCentralWidget(_centralView);
 
-  this->setQtConnects();
+  this->setMainWindowConnects();
+  this->setMenuConnects();
 }
 
 MainWindow::~MainWindow()
 {
-  delete _centralView;
+  this->clearCentralView();
   delete ui;
 }
 
-void MainWindow::openFile()
+void MainWindow::setMenuConnects()
 {
-  QString homePath = QDir::homePath();
-  QString fileName = QFileDialog::getOpenFileName(
-      this,
-      tr("Open a media ..."),
-      homePath,
-      tr("Images (*.png *.xpm *.jpg);;Videos (*.txt)")
-      );
-  if (_vm->openFile(fileName))
-  {
-    //this->setCentralWidget(this->createCameraView);
-  }
+  connect(ui->actionOpen_file, SIGNAL(triggered()), _centralView, SLOT(OpenFile()));
+  connect(ui->actionOpen_device, SIGNAL(triggered()), _centralView, SLOT(OpenCameraDevice()));
 }
 
-void MainWindow::openDevice()
+void MainWindow::setMainWindowConnects()
 {
-  this->setCentralWidget(this->createCameraView());
-  this->updateGeometry();
-  _cameraView->OpenDevice();
-}
-void MainWindow::setQtConnects()
-{
-  connect(ui->actionOpen_file, SIGNAL(triggered()), this, SLOT(openFile()));
-  connect(ui->actionOpen_device, SIGNAL(triggered()), this, SLOT(openDevice()));
+  connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
 }
 
-CameraView* MainWindow::createCameraView()
+void MainWindow::appExit()
 {
-  if (_cameraView == 0)
-    _cameraView = new CameraView;
-  return _cameraView;
+  this->clearCentralView();
+  qApp->quit();
 }
 
 CentralView* MainWindow::createCentralView()
@@ -60,5 +43,14 @@ CentralView* MainWindow::createCentralView()
   if (_centralView == 0)
     _centralView = new CentralView;
   return _centralView;
+}
+
+void MainWindow::clearCentralView()
+{
+  if (_centralView != 0)
+  {
+    delete _centralView;
+    _centralView = 0;
+  }
 }
 
