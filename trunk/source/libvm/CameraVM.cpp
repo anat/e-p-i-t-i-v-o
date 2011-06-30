@@ -50,6 +50,8 @@ namespace vm
 
     _isStop = false;
     CvCapture* capture = cvCaptureFromCAM(_cameras);
+    //cvSetCaptureProperty(capture, CV_CAP_PROP_FPS, 10);
+    //std::cout << "fps : " << fps << std::endl;
     if(capture)
     {
       IplImage* frame = 0;
@@ -69,8 +71,7 @@ namespace vm
           _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
           if (_isRecording)
             _record->AddVideoFrame(snapshot);
-          //cvWaitKey(40);
-          cvWaitKey(1);
+          cvWaitKey();
         }
         else
           cvWaitKey(350);
