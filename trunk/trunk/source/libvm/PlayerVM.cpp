@@ -103,7 +103,10 @@ namespace vm
           _surface->setPixmap(QPixmap::fromImage(*nFrame).scaled(_surface->size()));
           delete nFrame;
           nFrame = 0;
-          cvWaitKey(40);
+          usleep(100000);
+          QApplication::processEvents();
+          QCoreApplication::sendPostedEvents(NULL, 0);
+          //cvWaitKey(40);
         }
         else
           cvWaitKey(500);

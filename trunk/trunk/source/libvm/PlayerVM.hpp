@@ -6,6 +6,7 @@
 # include <QImage>
 # include <QLabel>
 # include <QDir>
+# include <QApplication>
 
 #include <cv.h>
 #include <cv.hpp>
