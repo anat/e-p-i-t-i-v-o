@@ -55,6 +55,11 @@ uint8_t *VideoCodec::getProcessedImg() const
   return _result;
 }
 
+void VideoCodec::setResultBuff(uint8_t *res)
+{
+  _result = res;
+}
+
 void VideoCodec::decode(uint8_t *img)
 {
   uint32_t x, y;
