@@ -4,11 +4,13 @@ SET(headers
 	MainWindowVM.hpp
 	CentralVM.hpp
 	CameraVM.hpp
+	PlayerVM.hpp
 )
 SET(sources
 	MainWindowVM.cpp
 	CentralVM.cpp
 	CameraVM.cpp
+	PlayerVM.cpp
 )
 
 INCLUDE_DIRECTORIES(

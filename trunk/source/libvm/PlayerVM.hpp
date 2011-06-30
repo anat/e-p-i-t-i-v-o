@@ -1,5 +1,5 @@
-#ifndef __CAMERAVM_HPP__
-# define __CAMERAVM_HPP__
+#ifndef __PLAYERVM_HPP__
+# define __PLAYERVM_HPP__
 
 # include <QObject>
 # include <QString>
@@ -16,46 +16,43 @@
 
 namespace vm
 {
-  class CameraVM : public QObject
+  class PlayerVM : public QObject
   {
     //TODO uncomment if slot or signals
     //Q_OBJECT
 
  public:
-    static CameraVM* GetInstance();
+    static PlayerVM* GetInstance();
     static void DelInstance();
 
     void mapSurface(QLabel* surface);
 
-    void StartCam();
-    void StopCam();
-    void PauseCam();
-
     void SliderChangeValue();
 
-    void StartRecordCam();
-    void StopRecCam();
-    void PauseRecCam();
+    void Play();
+    void Stop();
+    void Pause();
+
+    void setFilepath(QString const &);
 
   protected:
 
   private:
-    static CameraVM* _instance;
+    static PlayerVM* _instance;
 
-    CameraVM(); 
-    ~CameraVM();
+    PlayerVM(); 
+    ~PlayerVM();
 
     IplImage* _iplImg;
-    int _cameras;
     bool _isStop;
     bool _isPaused;
-    bool _isRecording;
 
     QLabel * _surface;
 
     QImage ConvertIplImgtoQBitmpat(IplImage* img);
 
+    QString _recordFilepath;
     MediaFile* _record;
   };
 }
-#endif // !__CAMERAVM_HPP__
+#endif // !__PLAYERVM_HPP__

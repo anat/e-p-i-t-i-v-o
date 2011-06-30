@@ -10,11 +10,13 @@ SET(app_path
 SET(headers
 	GUILoader.hpp
 	ConfigManager.hpp
+	MediaFile.hpp
 )
 SET(sources
 	main.cpp
 	GUILoader.cpp
 	ConfigManager.cpp
+	MediaFile.cpp
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/source)

@@ -6,16 +6,19 @@ SET(moc_headers
 	MainWindow.hpp
 	CentralView.hpp
         CameraView.hpp
+	PlayerView.hpp
 )
 SET(sources
 	MainWindow.cpp
 	CentralView.cpp
         CameraView.cpp
+	PlayerView.cpp
 )
 SET(forms
 	MainWindow.ui
 	CentralView.ui
         CameraView.ui
+	PlayerView.ui
 )
 SET(resources
 	resources.qrc
