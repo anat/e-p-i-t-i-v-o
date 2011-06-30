@@ -10,12 +10,10 @@ namespace vm
     _record(0)
   {
     _cameras = 0;
-    //_isFlip = false;
     _isStop  = true;
     _isPaused  = false;
     _record = 0;
     _isRecording = false;
-    //ui->containersFrame->setVisible(false);
   }
   CameraVM::~CameraVM()
   {
@@ -42,8 +40,6 @@ namespace vm
 
   void CameraVM::StartCam()
   {
-    VideoCodec *codec = new VideoCodec(640, 480, COLOR_BGR);
-
     if(!_isStop || !_surface)
     {
       if (_isPaused)
@@ -52,9 +48,10 @@ namespace vm
     }
 
     _isStop = false;
+
+    VideoCodec *codec = new VideoCodec(640, 480, COLOR_BGR);
+
     CvCapture* capture = cvCaptureFromCAM(_cameras);
-    //cvSetCaptureProperty(capture, CV_CAP_PROP_FPS, 10);
-    //std::cout << "fps : " << fps << std::endl;
     if(capture)
     {
       IplImage* frame = 0;
@@ -63,20 +60,21 @@ namespace vm
         if (_isStop)
           break;
 
-        if (!_isPaused) //TODO THREAD SLEEP
+        if (!_isPaused)
         {
           frame = cvQueryFrame( capture );
-          int buffSize = codec->encode((uint8_t *) frame->imageData);
-          codec->decode((uint8_t *) frame->imageData);
-          //::exit(1);
           if(!frame)
             break;
 
-          //_iplImg = cvCloneImage(frame);
           QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
           _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
+
           if (_isRecording)
+          {
+            int buffSize = codec->encode((uint8_t *) frame->imageData);
+            //codec->decode((uint8_t *) frame->imageData);
             _record->AddVideoFrame(codec->getProcessedImg(), buffSize);
+          }
           cvWaitKey();
         }
         else
@@ -153,17 +151,16 @@ namespace vm
       _record->Start();
       _isRecording = true;
     }
-    
+
   }
 
   void CameraVM::StopRecCam()
   {
     std::cout << "Stop recording" << std::endl;
-      _isRecording = false;
+    _isRecording = false;
     if (_record)
     {
-      _record->Stop();
-      // save
+      _record->Stop(); // save &clean
       delete _record;
       _record = 0;
     }
@@ -172,8 +169,7 @@ namespace vm
   void CameraVM::PauseRecCam()
   {
     std::cout << "Pause recording" << std::endl;
-      _isRecording = false;
-
+    _isRecording = false;
   }
 
 }
