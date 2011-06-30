@@ -106,12 +106,6 @@ public:
     }
 };
 
-struct           Encoding
-{
-    int nbit;
-    int bits;
-};
-
 class		Huffman
 {
 public:

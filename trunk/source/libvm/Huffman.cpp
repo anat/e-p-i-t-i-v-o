@@ -38,7 +38,6 @@ void            Huffman::compress(uint8_t* buffer, int size)
     HuffmanFileHeader fh;
     fh.numberOfType = size;
 
-    std::map<uint8_t, Encoding*> bits;
     for (int i = 0; i < 256; i++)
     {
         std::map<uint8_t, int>::iterator it = values.find(i);
