@@ -14,6 +14,7 @@
 #include <highgui.h>
 
 #include "app/MediaFile.hpp"
+#include "VideoCodec.hpp"
 
 namespace vm
 {
@@ -54,6 +55,7 @@ namespace vm
 
     QString _recordFilepath;
     MediaFile* _record;
+    VideoCodec * _codec;
   };
 }
 #endif // !__PLAYERVM_HPP__

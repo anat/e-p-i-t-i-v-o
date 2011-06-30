@@ -66,9 +66,9 @@ namespace vm
         if (!_isPaused) //TODO THREAD SLEEP
         {
           frame = cvQueryFrame( capture );
-	  codec->encode((uint8_t *) frame->imageData);
-	  codec->decode((uint8_t *) frame->imageData);
-	  //::exit(1);
+          int buffSize = codec->encode((uint8_t *) frame->imageData);
+          codec->decode((uint8_t *) frame->imageData);
+          //::exit(1);
           if(!frame)
             break;
 
@@ -76,7 +76,7 @@ namespace vm
           QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
           _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
           if (_isRecording)
-            _record->AddVideoFrame(snapshot);
+            _record->AddVideoFrame(codec->getProcessedImg(), buffSize);
           cvWaitKey();
         }
         else

@@ -51,8 +51,8 @@ bool MediaFile::Start()
   _fileStream->setVersion(QDataStream::Qt_4_7);
 
   if (_createMode)
-    this->writeHeader();
-  else
+  this->writeHeader();
+else
     this->readHeader();
 
   return true;
@@ -88,7 +88,7 @@ bool MediaFile::readHeader()
 {
   Header_s * _fileHeader = new Header_s;
   int bytes = _fileStream->readRawData ((char *)(_fileHeader), sizeof(Header_s));
-  //std::cout << "hread type: "<< header->type << std::endl;
+  //std::cout << "hread type: "<< _fileHeader->type << std::endl;
   if (bytes != -1)
     return true;
   delete _fileHeader;
@@ -97,18 +97,27 @@ bool MediaFile::readHeader()
 }
 
 // TODO REPLACE BY CONVERTED FRAME
-bool MediaFile::AddVideoFrame(QImage const & img)
+bool MediaFile::AddVideoFrame(uint8_t * buff, int siz)
 {
   bool ret = true;
-  (*_fileStream) << img;
+  int bytes = _fileStream->writeRawData((char *)(&siz), sizeof(siz));
+  //std::cout << "write size size:" << bytes << std::endl; 
+  bytes = _fileStream->writeRawData((char *)(buff), siz);
+  //std::cout << "write data size:" << bytes << std::endl; 
   return ret;
 }
 
-QImage* MediaFile::GetNextVideoFrame()
+uint8_t* MediaFile::GetNextVideoFrame()
 {
-  QImage * img = new QImage;
-  (*_fileStream) >> (*img);
-  return img;
+  uint8_t * buff = 0;
+  int siz = 0;
+  int bytes = _fileStream->readRawData ((char *)(&siz), sizeof(siz));
+  if (!bytes)
+    return 0;
+  //std::cout << "readed size :" << siz << std::endl; 
+  buff = new uint8_t[siz];
+  bytes = _fileStream->readRawData ((char *)(buff), siz);
+  return buff;
 }
 
 /*void MediaFile::run()
