@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <queue>
+#include <stdint.h>
 
 // 4096 - 8192 - 16384
 
@@ -52,8 +53,8 @@ class MediaFile //: public QThread
 
     //void run();
 
-    bool AddVideoFrame(QImage const & img);
-    QImage* GetNextVideoFrame();
+    bool AddVideoFrame(uint8_t * buff, int size);
+    uint8_t* GetNextVideoFrame();
     //bool CloseMediaFile();
 
     //Header_s const& getFileHeader();

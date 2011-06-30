@@ -6,7 +6,8 @@ namespace vm
 
   PlayerVM::PlayerVM() :
     _iplImg(0),
-    _record(0)
+    _record(0),
+    _codec(0)
   {
     _isStop  = true;
     _isPaused  = false;
@@ -82,6 +83,7 @@ namespace vm
       _record = new MediaFile(_recordFilepath, false, Video);
       _record->Start();
       _isStop = false;
+      _codec = new VideoCodec(640, 480, COLOR_BGR);
     }
     std::cout << "Start plading" << std::endl;
     
@@ -92,7 +94,20 @@ namespace vm
 
         if (!_isPaused) 
         {
-          QImage * nFrame = _record->GetNextVideoFrame();
+          uint8_t * buff  = _record->GetNextVideoFrame();
+          if (!buff)
+          {
+            std::cout << "quit playing" << std::endl;
+            _isStop = true;
+            return ;
+          }
+          uint8_t * buff2  =  new uint8_t[640 * 480 * 3];
+
+          _codec->setResultBuff(buff);
+          _codec->decode(buff2);
+
+          
+          QImage * nFrame= new QImage (buff2, 640, 480, QImage::Format_RGB888 );
           if (nFrame->isNull())
           {
             std::cout << "quit playing" << std::endl;
