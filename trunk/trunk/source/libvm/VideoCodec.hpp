@@ -40,6 +40,7 @@ public:
   uint32_t encode(uint8_t *img);
   void     decode(uint8_t *img);
   uint8_t *getProcessedImg()     const;
+  void setResultBuff(uint8_t *res);
 
 private:
   /* Image compression */
