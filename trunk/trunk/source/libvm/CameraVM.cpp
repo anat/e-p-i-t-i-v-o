@@ -1,4 +1,5 @@
 #include "CameraVM.hpp"
+#include "VideoCodec.hpp"
 #include <iostream>
 namespace vm
 {
@@ -41,6 +42,8 @@ namespace vm
 
   void CameraVM::StartCam()
   {
+    VideoCodec *codec = new VideoCodec(640, 480, COLOR_BGR);
+
     if(!_isStop || !_surface)
     {
       if (_isPaused)
@@ -63,6 +66,8 @@ namespace vm
         if (!_isPaused) //TODO THREAD SLEEP
         {
           frame = cvQueryFrame( capture );
+	  //codec->encode((uint8_t *) frame->imageData);
+	  //codec->decode((uint8_t *) frame->imageData);
           if(!frame)
             break;
 

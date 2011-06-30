@@ -1,5 +1,5 @@
-#ifndef IMGCODEC_HPP
-# define IMGCODEC_HPP
+#ifndef VIDEOCODEC_HPP
+# define VIDEOCODEC_HPP
 
 # include <stdint.h>
 # include <math.h>
@@ -24,7 +24,7 @@ enum colorType
   bloc[((y)*24)+((x)*3)+2] = roundf(Y[n] + 2.03211f * U[n]);
 */
 
-class ImgCodec
+class VideoCodec
 {
 private:
   uint16_t       _width;
@@ -36,8 +36,8 @@ private:
   static const uint32_t quantization_matrix[8][8];
 
 public:
-  ImgCodec(int width, int heigth, enum colorType color = COLOR_RGB);
-  ~ImgCodec();
+  VideoCodec(int width, int heigth, enum colorType color = COLOR_RGB);
+  ~VideoCodec();
   uint32_t encode(uint8_t *img);
   void     decode(uint8_t *img);
   uint8_t *getProcessedImg()     const;

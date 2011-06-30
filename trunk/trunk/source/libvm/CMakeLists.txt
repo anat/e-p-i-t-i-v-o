@@ -4,12 +4,14 @@ SET(headers
 	MainWindowVM.hpp
 	CentralVM.hpp
 	CameraVM.hpp
+	VideoCodec.hpp
 	PlayerVM.hpp
 )
 SET(sources
 	MainWindowVM.cpp
 	CentralVM.cpp
 	CameraVM.cpp
+	VideoCodec.cpp
 	PlayerVM.cpp
 )
 
