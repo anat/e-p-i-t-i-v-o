@@ -4,12 +4,16 @@ namespace vm
 {
   CameraVM *CameraVM::_instance = 0;
 
-  CameraVM::CameraVM()
+  CameraVM::CameraVM() :
+    _iplImg(0),
+    _record(0)
   {
     _cameras = 0;
     //_isFlip = false;
     _isStop  = true;
     _isPaused  = false;
+    _record = 0;
+    _isRecording = false;
     //ui->containersFrame->setVisible(false);
   }
   CameraVM::~CameraVM()
@@ -63,11 +67,13 @@ namespace vm
           _iplImg = cvCloneImage(frame);
           QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
           _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
-
-          cvWaitKey(40);
+          if (_isRecording)
+            _record->AddVideoFrame(snapshot);
+          //cvWaitKey(40);
+          cvWaitKey(1);
         }
         else
-          cvWaitKey(500);
+          cvWaitKey(350);
       }
       cvReleaseCapture(&capture);
     } // ~capture
@@ -132,16 +138,34 @@ namespace vm
 
   void CameraVM::StartRecordCam()
   {
-
+    QString homePath = QDir::homePath();
+    std::cout << "Start recording" << std::endl;
+    if (!_record)
+    {
+      _record = new MediaFile(homePath+"/test.epitivo", true, Video);
+      _record->Start();
+      _isRecording = true;
+    }
+    
   }
 
   void CameraVM::StopRecCam()
   {
-
+    std::cout << "Stop recording" << std::endl;
+      _isRecording = false;
+    if (_record)
+    {
+      _record->Stop();
+      // save
+      delete _record;
+      _record = 0;
+    }
   }
 
   void CameraVM::PauseRecCam()
   {
+    std::cout << "Pause recording" << std::endl;
+      _isRecording = false;
 
   }
 

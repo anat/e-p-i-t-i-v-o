@@ -11,6 +11,7 @@
 #include "CentralView.hpp"
 #include "libvm/CentralVM.hpp"
 #include "CameraView.hpp"
+#include "PlayerView.hpp"
 
 namespace Ui {
   class CentralView;
@@ -40,11 +41,16 @@ class CentralView : public QWidget
     vm::CentralVM* _vm;
 
     CameraView*   _cameraView;
+    PlayerView*   _playerView;
 
     void setCameraViewQtConnects(bool state);
+    void setPlayerViewQtConnects(bool state);
 
     CameraView* createCameraView();
     void clearCameraView();
+
+    PlayerView* createPlayerView();
+    void clearPlayerView();
 
 };
 
