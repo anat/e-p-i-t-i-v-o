@@ -1,7 +1,7 @@
 #include "VideoCodec.hpp"
 #include <iostream>
 
-const uint32_t ImgCodec::quantization_matrix[8][8] =
+const uint32_t VideoCodec::quantization_matrix[8][8] =
   {
     {3,  6,  9,  12, 15,  18,  21,  24},
     {6,  12, 18, 24, 30,  36,  42,  48},
@@ -14,7 +14,7 @@ const uint32_t ImgCodec::quantization_matrix[8][8] =
   };
 
 
-ImgCodec::ImgCodec(int width, int heigth, enum colorType color)
+VideoCodec::VideoCodec(int width, int heigth, enum colorType color)
 {
   if (width % 8 || heigth % 8)
     throw "This is not going to work!";
@@ -25,23 +25,23 @@ ImgCodec::ImgCodec(int width, int heigth, enum colorType color)
   _numb   = 0;
 }
 
-ImgCodec::~ImgCodec()
+VideoCodec::~VideoCodec()
 {
   if (_result)
     delete _result;
 }
 
-uint8_t *ImgCodec::getProcessedImg() const
+uint8_t *VideoCodec::getProcessedImg() const
 {
   return _result;
 }
 
-void ImgCodec::decode(uint8_t *img)
+void VideoCodec::decode(uint8_t *img)
 {
   (void) img;
 }
 
-uint32_t ImgCodec::encode(uint8_t *img)
+uint32_t VideoCodec::encode(uint8_t *img)
 {
   uint32_t x, y;
   uint32_t luma[8][8], chromaU[8][8], chromaV[8][8];
@@ -70,7 +70,7 @@ uint32_t ImgCodec::encode(uint8_t *img)
   return _buffsize;
 }
 
-void ImgCodec::rgb_to_yuv(uint8_t *img, uint32_t x, uint32_t y,
+void VideoCodec::rgb_to_yuv(uint8_t *img, uint32_t x, uint32_t y,
 			  uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
 {
   int i, j;
@@ -91,7 +91,7 @@ void ImgCodec::rgb_to_yuv(uint8_t *img, uint32_t x, uint32_t y,
     }
 }
 
-void ImgCodec::downsampling420(uint32_t chromaU[8][8], uint32_t chromaV[8][8])
+void VideoCodec::downsampling420(uint32_t chromaU[8][8], uint32_t chromaV[8][8])
 {
   int i, j;
 
@@ -107,7 +107,7 @@ void ImgCodec::downsampling420(uint32_t chromaU[8][8], uint32_t chromaV[8][8])
     }
 }
 
-void ImgCodec::dct(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
+void VideoCodec::dct(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
 {
   int i, j;
   uint32_t freq_matrix[8][8];
@@ -135,7 +135,7 @@ void ImgCodec::dct(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV
       chromaV[i][j] = freq_matrix[i][j];
 }
 
-void ImgCodec::idct(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
+void VideoCodec::idct(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
 {
   int i, j;
   uint32_t pixel_matrix[8][8];
@@ -163,7 +163,7 @@ void ImgCodec::idct(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chroma
       chromaV[i][j] = pixel_matrix[i][j];
 }
 
-void ImgCodec::quantization(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
+void VideoCodec::quantization(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
 {
   int i, j;
 
@@ -178,7 +178,7 @@ void ImgCodec::quantization(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_
       chromaV[i][j] /= quantization_matrix[i][j]; 
 }
 
-void ImgCodec::iquantization(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
+void VideoCodec::iquantization(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
 {
   int i, j;
 
@@ -193,7 +193,7 @@ void ImgCodec::iquantization(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32
       chromaV[i][j] *= quantization_matrix[i][j]; 
 }
 
-int ImgCodec::dct(uint32_t m[8][8], uint8_t i, uint8_t j)
+int VideoCodec::dct(uint32_t m[8][8], uint8_t i, uint8_t j)
 {
   double sum = 0.;
 
@@ -203,7 +203,7 @@ int ImgCodec::dct(uint32_t m[8][8], uint8_t i, uint8_t j)
   return (int) (0.25 * C(i) * C(j) * sum);
 }
 
-int ImgCodec::idct(uint32_t m[8][8], uint8_t x, uint8_t y)
+int VideoCodec::idct(uint32_t m[8][8], uint8_t x, uint8_t y)
 {
   double sum = 0.;
 
@@ -217,7 +217,7 @@ int ImgCodec::idct(uint32_t m[8][8], uint8_t x, uint8_t y)
  Run Length Encoding
 **********************/
 
-void ImgCodec::rle(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
+void VideoCodec::rle(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8])
 {
   uint32_t tmp[64];
 
@@ -229,7 +229,7 @@ void ImgCodec::rle(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV
   _buffsize += compressRle(tmp, _result + _buffsize);
 }
 
-int			ImgCodec::compressRle(uint32_t tab[64], uint8_t *comp)
+int			VideoCodec::compressRle(uint32_t tab[64], uint8_t *comp)
 {
   int			j = 1;
   int			nb = 1;
@@ -255,7 +255,7 @@ int			ImgCodec::compressRle(uint32_t tab[64], uint8_t *comp)
   return i;
 }
 
-void			ImgCodec::decompressRle(int comp[128], int dec[64], int size)
+void			VideoCodec::decompressRle(int comp[128], int dec[64], int size)
 {
   int			nb;
   int			j=0;
@@ -273,21 +273,21 @@ void			ImgCodec::decompressRle(int comp[128], int dec[64], int size)
     }
 }
 
-void		ImgCodec::goRight(uint32_t *cha, uint32_t *x, uint32_t *i, uint32_t c)
+void		VideoCodec::goRight(uint32_t *cha, uint32_t *x, uint32_t *i, uint32_t c)
 {
   *cha = c;
   *x = *x + 1;
   *i = *i + 1;
 }
 
-void		ImgCodec::goDown(uint32_t *cha, uint32_t *y, uint32_t *i, uint32_t c)
+void		VideoCodec::goDown(uint32_t *cha, uint32_t *y, uint32_t *i, uint32_t c)
 {
   *cha = c;
   *y = *y + 1;
   *i = *i + 1;
 }
 
-void		ImgCodec::goDownLeft(uint32_t *cha, uint32_t tab[8][8], uint32_t *i, uint32_t *x, uint32_t *y)
+void		VideoCodec::goDownLeft(uint32_t *cha, uint32_t tab[8][8], uint32_t *i, uint32_t *x, uint32_t *y)
 {
   cha[*i] = tab[*y][*x];
   *i = *i + 1;
@@ -303,7 +303,7 @@ void		ImgCodec::goDownLeft(uint32_t *cha, uint32_t tab[8][8], uint32_t *i, uint3
     }
 }
 
-void		ImgCodec::goUpRight(uint32_t *cha, uint32_t tab[8][8], uint32_t *i, uint32_t *x, uint32_t *y)
+void		VideoCodec::goUpRight(uint32_t *cha, uint32_t tab[8][8], uint32_t *i, uint32_t *x, uint32_t *y)
 {
   cha[*i] = tab[*y][*x];
   *i = *i + 1;
@@ -319,7 +319,7 @@ void		ImgCodec::goUpRight(uint32_t *cha, uint32_t tab[8][8], uint32_t *i, uint32
     }
 }
 
-void		ImgCodec::zigzag(uint32_t tab[8][8], uint32_t cha[64])
+void		VideoCodec::zigzag(uint32_t tab[8][8], uint32_t cha[64])
 {
   uint32_t     	x = 0;
   uint32_t     	y = 0;
