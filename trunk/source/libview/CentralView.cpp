@@ -14,8 +14,8 @@ CentralView::CentralView(QWidget *parent) :
 
 CentralView::~CentralView()
 {
-  delete _cameraView;
-  delete _playerView;
+  this->clearCameraView();
+  this->clearPlayerView();
   delete ui;
 }
 

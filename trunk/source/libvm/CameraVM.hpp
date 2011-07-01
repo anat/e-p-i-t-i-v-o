@@ -11,6 +11,7 @@
 #include <cv.hpp>
 #include <cvaux.h>
 #include <highgui.h>
+#include <queue>
 
 #include "app/MediaFile.hpp"
 
@@ -50,7 +51,8 @@ namespace vm
     bool _isStop;
     bool _isPaused;
     bool _isRecording;
-
+    bool _isPauseRecording;
+    std::queue<std::pair<int, uint8_t*> >   _cachedEncFrames;
     QLabel * _surface;
 
     QImage ConvertIplImgtoQBitmpat(IplImage* img);
