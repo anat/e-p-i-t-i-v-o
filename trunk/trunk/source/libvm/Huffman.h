@@ -1,3 +1,6 @@
+#ifndef HUFFMAN_H_
+# define HUFFMAN_H_
+
 #include <map>
 #include <iostream>
 #include <stdlib.h>
@@ -14,16 +17,18 @@ struct          HuffmanFileHeader
     uint32_t N[256];        // Number of occurence for each value of an uint8_t
 };
 
+class Node;
+extern std::list<Node*> allNodes;
+
 class		Node
 {
 public:
-    static std::list<Node*> allNodes;
 
     Node() : hasDaddy(false), zero(0), one(0), value(0), isLeaf(false) {
-        Node::allNodes.push_back(this);}
+        allNodes.push_back(this);}
 
     Node(Node* Zero, Node* One) : hasDaddy(false), zero(Zero), one(One), value(0), parent(NULL), isLeaf(false) {
-        Node::allNodes.push_back(this);
+        allNodes.push_back(this);
         zero->hasDaddy = (one->hasDaddy = true);
         zero->parent = (one->parent = this);
         n = zero->n + one->n;}
@@ -36,7 +41,7 @@ public:
     bool isLeaf;
     bool hasDaddy;
 };
-std::list<Node*> Node::allNodes;
+//std::list<Node*> Node::allNodes;
 
 
 
@@ -129,3 +134,5 @@ private:
     int index;
     int bitindex;
 };
+
+#endif

@@ -6,6 +6,7 @@ SET(headers
 	CameraVM.hpp
 	VideoCodec.hpp
 	PlayerVM.hpp
+	Huffman.h
 )
 SET(sources
 	MainWindowVM.cpp
@@ -13,6 +14,7 @@ SET(sources
 	CameraVM.cpp
 	VideoCodec.cpp
 	PlayerVM.cpp
+	Huffman.cpp
 )
 
 INCLUDE_DIRECTORIES(
