@@ -19,6 +19,7 @@ CameraView::CameraView(QWidget *parent) :
 
 CameraView::~CameraView()
 {
+    _vm->DelInstance();
     delete ui;
 }
 

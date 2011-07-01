@@ -1,6 +1,7 @@
 #include "CameraVM.hpp"
 #include "VideoCodec.hpp"
 #include <iostream>
+
 namespace vm
 {
   CameraVM *CameraVM::_instance = 0;
@@ -12,12 +13,13 @@ namespace vm
     _cameras = 0;
     _isStop  = true;
     _isPaused  = false;
-    _record = 0;
     _isRecording = false;
+    _isPauseRecording = false;
   }
   CameraVM::~CameraVM()
   {
     delete _iplImg;
+    delete _record;
   }
 
   CameraVM* CameraVM::GetInstance()
@@ -54,6 +56,7 @@ namespace vm
     CvCapture* capture = cvCaptureFromCAM(_cameras);
     if(capture)
     {
+      uint8_t * buff2  =  new uint8_t[640 * 480 * 3];
       IplImage* frame = 0;
       while(!_isStop)
       {
@@ -66,14 +69,47 @@ namespace vm
           if(!frame)
             break;
 
-          QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
-          _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
-
           if (_isRecording)
           {
+            // dans tt les cas capture + enc + ecriture frame courante
             int buffSize = codec->encode((uint8_t *) frame->imageData);
-            //codec->decode((uint8_t *) frame->imageData);
-            _record->AddVideoFrame(codec->getProcessedImg(), buffSize);
+            uint8_t* encImg = codec->getProcessedImg();
+            _record->AddVideoFrame(encImg, buffSize);
+
+            if (_isPauseRecording)
+            {
+              //  frame courante enc add au cache -> no refresh img
+              std::cout << "Pause direct but recording" << std::endl;
+              _cachedEncFrames.push(std::pair<int, uint8_t*>(buffSize, encImg));
+            }
+            else
+            {
+              // + capture + encodage frame courante
+              if (_cachedEncFrames.size() > 0)
+              {
+                // recup de la plus vieille frame -> decodage -> affichage
+                std::cout << "Delay playing while recording" << std::endl;
+                std::pair<int, uint8_t*> const & cache = _cachedEncFrames.front();
+                codec->setResultBuff(cache.second);
+                codec->decode(buff2);
+                QImage nFrame(buff2, 640, 480, QImage::Format_RGB888 );
+                nFrame.scaled(_surface->size());
+                _surface->setPixmap(QPixmap::fromImage(nFrame).scaled(_surface->size()));
+                _cachedEncFrames.pop();
+              }
+              else
+              {
+                //  -> affichage
+                std::cout << "Normal recording" << std::endl;
+                QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
+                _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
+              }
+            }
+          }
+          else
+          {
+              QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
+              _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
           }
           cvWaitKey();
         }
@@ -143,21 +179,25 @@ namespace vm
 
   void CameraVM::StartRecordCam()
   {
-    QString homePath = QDir::homePath();
-    std::cout << "Start recording" << std::endl;
     if (!_record)
     {
+      QString homePath = QDir::homePath();
+      std::cout << "Start recording " << std::endl;
       _record = new MediaFile(homePath+"/test.epitivo", true, Video);
       _record->Start();
       _isRecording = true;
     }
-
+    else if (_isPauseRecording)
+    {
+      _isPauseRecording = false;
+    }
   }
 
   void CameraVM::StopRecCam()
   {
     std::cout << "Stop recording" << std::endl;
     _isRecording = false;
+    _isPauseRecording = false;
     if (_record)
     {
       _record->Stop(); // save &clean
@@ -169,7 +209,7 @@ namespace vm
   void CameraVM::PauseRecCam()
   {
     std::cout << "Pause recording" << std::endl;
-    _isRecording = false;
+    _isPauseRecording = true;
   }
 
 }

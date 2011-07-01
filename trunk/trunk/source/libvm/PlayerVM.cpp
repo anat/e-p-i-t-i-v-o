@@ -85,47 +85,44 @@ namespace vm
       _isStop = false;
       _codec = new VideoCodec(640, 480, COLOR_BGR);
     }
-    std::cout << "Start plading" << std::endl;
-    
-      while(!_isStop)
+    std::cout << "Start playing" << std::endl;
+
+    uint8_t * buff2  =  new uint8_t[640 * 480 * 3];
+
+    while(!_isStop)
+    {
+      if (_isStop)
+        break;
+
+      if (!_isPaused) 
       {
-        if (_isStop)
-          break;
-
-        if (!_isPaused) 
+        uint8_t * buff  = _record->GetNextVideoFrame();
+        if (!buff)
         {
-          uint8_t * buff  = _record->GetNextVideoFrame();
-          if (!buff)
-          {
-            std::cout << "quit playing" << std::endl;
-            _isStop = true;
-            return ;
-          }
-          uint8_t * buff2  =  new uint8_t[640 * 480 * 3];
-
-          _codec->setResultBuff(buff);
-          _codec->decode(buff2);
-
-          
-          QImage * nFrame= new QImage (buff2, 640, 480, QImage::Format_RGB888 );
-          if (nFrame->isNull())
-          {
-            std::cout << "quit playing" << std::endl;
-            _isStop = true;
-            return ;
-          }
-          nFrame->scaled(_surface->size());
-          _surface->setPixmap(QPixmap::fromImage(*nFrame).scaled(_surface->size()));
-          delete nFrame;
-          nFrame = 0;
-          usleep(100000);
-          QApplication::processEvents();
-          QCoreApplication::sendPostedEvents(NULL, 0);
-          //cvWaitKey(40);
+          std::cout << "quit playing -> no buff" << std::endl;
+          _isStop = true;
+          return ;
         }
-        else
-          cvWaitKey(500);
+
+        _codec->setResultBuff(buff);
+        _codec->decode(buff2);
+
+        QImage nFrame(buff2, 640, 480, QImage::Format_RGB888 );
+        if (nFrame.isNull())
+        {
+          std::cout << "quit playing -> no frame" << std::endl;
+          _isStop = true;
+          return ;
+        }
+        nFrame.scaled(_surface->size());
+        _surface->setPixmap(QPixmap::fromImage(nFrame).scaled(_surface->size()));
+        usleep(100000);
+        QApplication::processEvents();
+        //QCoreApplication::sendPostedEvents(NULL, 0);
       }
+      else
+        cvWaitKey(500);
+    }
   }
 
   void PlayerVM::Stop()
