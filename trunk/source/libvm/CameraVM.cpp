@@ -212,5 +212,24 @@ namespace vm
     _isPauseRecording = true;
   }
 
+std::set<int> const & CameraVM::getCamDevices() 
+{
+  _availCameras.clear();
+  CvCapture* capTmp;
+  //int camCount = 0;
+  for (int i = 1; i < 50000; i++)
+  {
+    capTmp = cvCreateCameraCapture(i);
+    if (capTmp) 
+    {
+      _availCameras.insert(i);
+      cvReleaseCapture(&capTmp);
+      //std::cout << i << " dispo" << std::endl;
+      //camCount++;
+    } 
+  }
+  return _availCameras;
+}
+
 }
 
