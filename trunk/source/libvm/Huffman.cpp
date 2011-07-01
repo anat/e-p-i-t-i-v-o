@@ -12,15 +12,18 @@
         write(1, h.getBuffer(), h.getSize());
  */
 
-#define SHOW_LOG_HUFFMAN 1
+class Node;
+std::list<Node*> allNodes;
+
+#define SHOW_LOG_HUFFMAN 0
 
 void            Huffman::compress(uint8_t* buffer, int size)
 {
 #ifdef SHOW_LOG_HUFFMAN
-    std::cout << "Huffman compress - originalSize: " << size;
+  //std::cout << "Huffman compress - originalSize: " << size;
 #endif
     bitWriter.reset();
-    Node::allNodes.clear();
+    allNodes.clear();
     leafNodes.clear();
     values.clear();
     for (int i = 0; i < size; i++)
@@ -50,7 +53,7 @@ void            Huffman::compress(uint8_t* buffer, int size)
     for (int i = 0; i < size; i++)
         this->getPath(leafNodes[buffer[i]]);
     #ifdef SHOW_LOG_HUFFMAN
-    std::cout << " compressedSize: " << bitWriter.getSize() << " rate: " << (bitWriter.getSize() * 100) / size << "/100" << std::endl;
+    //std::cout << " compressedSize: " << bitWriter.getSize() << " rate: " << (bitWriter.getSize() * 100) / size << "/100" << std::endl;
 #endif
     bitWriter.deallocate();
 }
@@ -60,9 +63,9 @@ void            Huffman::compress(uint8_t* buffer, int size)
 void            Huffman::uncompress(uint8_t* buffer)
 {
     #ifdef SHOW_LOG_HUFFMAN
-    std::cout << "Huffman uncompress " << std::endl;
+  //std::cout << "Huffman uncompress " << std::endl;
     #endif
-    Node::allNodes.clear();
+    allNodes.clear();
     leafNodes.clear();
     values.clear();
     HuffmanFileHeader* fh = (HuffmanFileHeader*)buffer;
@@ -81,7 +84,7 @@ void            Huffman::uncompress(uint8_t* buffer)
     uint64_t currentByte = 0;
     while (currentByte < fh->numberOfType)
     {
-        uint8_t c = this->getNextChar(Node::allNodes.back(), buffer);
+        uint8_t c = this->getNextChar(allNodes.back(), buffer);
         bitWriter.addByte(c);
         currentByte++;
     }
@@ -141,14 +144,14 @@ void            Huffman::createTree(std::map<uint8_t, int> & assoc)
             new Node(n2, n);
         }
     }
-    //showTree(Node::allNodes.back(), 0);
+    //showTree(allNodes.back(), 0);
 }
 
 
 Node*            Huffman::getMinDaddy()
 {
-    std::list<Node*>::iterator it = Node::allNodes.begin();
-    std::list<Node*>::iterator end = Node::allNodes.end();
+    std::list<Node*>::iterator it = allNodes.begin();
+    std::list<Node*>::iterator end = allNodes.end();
     int i = std::numeric_limits<int>::max();
     Node* n = NULL;
     while (it != end)

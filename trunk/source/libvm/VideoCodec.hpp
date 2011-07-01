@@ -3,6 +3,7 @@
 
 # include <stdint.h>
 # include <math.h>
+# include "Huffman.h"
 
 enum colorType
   {
@@ -10,7 +11,7 @@ enum colorType
     COLOR_BGR
   };
 
-# define KEY_FREQ 12 /* 1 key frame every KEY_FREQ frames */
+# define KEY_FREQ 48 /* 1 key frame every KEY_FREQ frames */
 
 # define C(x) (!(x) ? 0.707106781 : 1)
 # define COS1 (cos((2 * x + 1) * i * M_PI / 16))
@@ -27,11 +28,16 @@ private:
   uint16_t       _heigth;
   enum colorType _type;       /* RGB || BGR              */
   uint8_t       *_result;     /* Compressed image buffer */
+  uint8_t       *_last;
+  uint8_t       *_last2;
+  //uint8_t       *_truc;
   uint32_t       _buffsize;   /* Compressed data size    */
   uint32_t       _numb;       /* Current frame number    */
+  uint32_t       _numb2;      /* Current frame number (Decode)   */
   //double         _pcos[8][8]; /* Precalculated cosinus   */
   //double         _ppcos[8][8][8][8]; /* Precalculated cosinus   */
   double         _pppcos[256][8][8][8][8]; /* Precalculated cosinus   */
+  Huffman        huffman;
   static const int32_t quantization_matrix[8][8];
 
 public:
@@ -56,6 +62,7 @@ private:
   void iquantization(int32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8]);
   int  dct(uint32_t m[8][8], uint8_t u, uint8_t v);
   int  idct(int32_t m[8][8], uint8_t x, uint8_t y);
+  void diff(uint8_t *img);
 
 
   /* Run Length Encoding */
