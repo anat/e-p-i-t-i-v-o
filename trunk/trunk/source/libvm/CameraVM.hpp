@@ -12,6 +12,7 @@
 #include <cvaux.h>
 #include <highgui.h>
 #include <queue>
+#include <set>
 
 #include "app/MediaFile.hpp"
 
@@ -23,6 +24,8 @@ namespace vm
     //Q_OBJECT
 
  public:
+    int _cameras;
+
     static CameraVM* GetInstance();
     static void DelInstance();
 
@@ -38,6 +41,8 @@ namespace vm
     void StopRecCam();
     void PauseRecCam();
 
+    std::set<int> const & getCamDevices() ;
+
   protected:
 
   private:
@@ -47,7 +52,6 @@ namespace vm
     ~CameraVM();
 
     IplImage* _iplImg;
-    int _cameras;
     bool _isStop;
     bool _isPaused;
     bool _isRecording;
@@ -58,6 +62,8 @@ namespace vm
     QImage ConvertIplImgtoQBitmpat(IplImage* img);
 
     MediaFile* _record;
+
+    std::set<int> _availCameras;
   };
 }
 #endif // !__CAMERAVM_HPP__
