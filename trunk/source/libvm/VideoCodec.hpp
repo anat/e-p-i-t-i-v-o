@@ -11,7 +11,7 @@ enum colorType
     COLOR_BGR
   };
 
-# define KEY_FREQ 48 /* 1 key frame every KEY_FREQ frames */
+# define KEY_FREQ 24 /* 1 key frame every KEY_FREQ frames */
 
 # define C(x) (!(x) ? 0.707106781 : 1)
 # define COS1 (cos((2 * x + 1) * i * M_PI / 16))

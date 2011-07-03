@@ -1,4 +1,5 @@
 #include "PlayerVM.hpp"
+#include <stdint.h>
 #include <iostream>
 namespace vm
 {
@@ -78,6 +79,9 @@ namespace vm
 
   void PlayerVM::Play()
   {
+    int tmpCount;
+    uint8_t tmpSwap;
+
     if (!_record)
     {
       _record = new MediaFile(_recordFilepath, false, Video);
@@ -88,7 +92,7 @@ namespace vm
     std::cout << "Start playing" << std::endl;
 
     uint8_t * buff2  =  new uint8_t[640 * 480 * 3];
-
+    //printf("play.buff2 = %p\n", buff2);
     while(!_isStop)
     {
       if (_isStop)
@@ -97,6 +101,7 @@ namespace vm
       if (!_isPaused) 
       {
         uint8_t * buff  = _record->GetNextVideoFrame();
+	//printf("play.buff = %p\n", buff);
         if (!buff)
         {
           std::cout << "quit playing -> no buff" << std::endl;
@@ -107,6 +112,13 @@ namespace vm
         _codec->setResultBuff(buff);
         _codec->decode(buff2);
 
+	for (tmpCount = 0; tmpCount < 640*480*3; tmpCount += 3)
+	  {
+	    tmpSwap = buff2[tmpCount+2];
+	    buff2[tmpCount+2] = buff2[tmpCount];
+	    buff2[tmpCount] = tmpSwap;
+	  }
+	
         QImage nFrame(buff2, 640, 480, QImage::Format_RGB888 );
         if (nFrame.isNull())
         {
