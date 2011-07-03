@@ -1,6 +1,6 @@
 #include "CentralView.hpp"
 #include "ui_CentralView.h"
-
+#include "playlistwidget.hpp"
 CentralView::CentralView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CentralView),
@@ -176,3 +176,9 @@ void CentralView::setStoppedMediaState()
     ui->pauseBtn->setVisible(false);
     _isPaused = false;
 }
+
+void CentralView::OpenPlayList()
+{
+    PlayListWidget::GetInstance()->show();
+}
+

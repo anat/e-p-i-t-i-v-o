@@ -25,6 +25,7 @@ void MainWindow::setMenuConnects()
 {
   connect(ui->actionOpen_file, SIGNAL(triggered()), _centralView, SLOT(OpenFile()));
   connect(ui->actionOpen_device, SIGNAL(triggered()), _centralView, SLOT(OpenCameraDevice()));
+  connect(ui->actionPlaylist, SIGNAL(triggered()), _centralView, SLOT(OpenPlayList()));
 }
 
 void MainWindow::setMainWindowConnects()
