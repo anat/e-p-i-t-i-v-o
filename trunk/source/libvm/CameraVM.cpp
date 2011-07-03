@@ -2,6 +2,8 @@
 #include "VideoCodec.hpp"
 #include <cstdio>
 #include <iostream>
+#include <QFileDialog>
+
 
 namespace vm
 {
@@ -77,8 +79,6 @@ namespace vm
 	    uint8_t * buff2;//  =  new uint8_t[640 * 480 * 3];
 	    uint8_t * buff3  =  new uint8_t[640 * 480 * 3];
 	    uint8_t * buff4  =  new uint8_t[640 * 480 * 3];
-	    //printf("buff3: %p\n", buff3);
-	    //printf("buff4: %p\n", buff4);
 	    //uint8_t * buff5  =  new uint8_t[640 * 480 * 3];
 	    uint32_t bsize;
 
@@ -93,11 +93,7 @@ namespace vm
             // dans tt les cas capture + enc + ecriture frame courante
             int buffSize = codec->encode((uint8_t *) frame->imageData);
 	    //printf("memcpy(%p, %p, %d);\n", buff3, codec->getProcessedImg(), buffSize);
-	    
-
-	    //memset(buff3, 0, buffSize);//DELETE
-
-
+	    memset(buff3, 0, buffSize);
 	    //printf("memcopy ok1\n");
 	    memcpy(buff3, codec->getProcessedImg(), buffSize);
 	    //printf("memcopy ok\n");
@@ -142,8 +138,6 @@ namespace vm
                 _surface->setPixmap(QPixmap::fromImage(nFrame).scaled(_surface->size()));
 		_cachedEncFrames.pop();
 
-		//printf("del buff2: %p\n", buff2);
-		//printf("del buff4: %p\n", buff4);
 		delete buff2; //delete?
 		delete buff4;
 		//delete cache.second;
@@ -177,7 +171,21 @@ namespace vm
     {
       _isStop = true;
       _surface->clear();
+      this->saveFile();
     }
+  }
+
+  void CameraVM::saveFile()
+  {
+      QString homePath("untitled.epitivo");
+      homePath.insert(0, QDir::homePath());
+
+      QString fileName = QFileDialog::getSaveFileName(0,
+                                  tr("Save File"),
+                                  homePath,
+                                  tr("Epitivo (*.epitivo)"));
+
+        // cp tmp file to filename
   }
 
   void CameraVM::PauseCam()
