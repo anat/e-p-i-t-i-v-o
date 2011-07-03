@@ -28,6 +28,7 @@ VideoCodec::VideoCodec(int width, int heigth, enum colorType color)
   _result = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
   printf("_result is %p\n", _result);
   _resultDec = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
+  printf("_resultDec is %p\n", _result);
   _last   = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
   _last2  = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
   //_bdiff  = new uint8_t[width * heigth * 3 * 2]; // VIRER LE * 2 QUAND RLE + HUFFMAN
@@ -94,17 +95,23 @@ void VideoCodec::decode(uint8_t *img)
   std::cout << "AVANT DECOMP[1]=" <<((unsigned int*)_resultDec)[1] << std::endl;
   std::cout << "AVANT DECOMP[2]=" <<((unsigned int*)_resultDec)[2] << std::endl;
   std::cout << "AVANT DECOMP[3]=" <<((unsigned int*)_resultDec)[3] << std::endl;
-  std::cout << std::endl;
+  std::cout << std::endl;*/
+
   huffman.uncompress(_resultDec);
   size = huffman.getSize();
-  std::cout << "UNCOMPRESS OK (datasize="<< size << ")"<< std::endl;
   tmp = huffman.getBuffer();
+
+  //std::cout << "UNCOMPRESS OK (datasize="<< size << ")"<< std::endl;
+  /*printf("tmp= %p\n", tmp);
   std::cout << "APRES DECOMP [0]=" <<((unsigned int*)tmp)[0] << std::endl;
   std::cout << "APRES DECOMP [1]=" <<((unsigned int*)tmp)[1] << std::endl;
   std::cout << "APRES DECOMP [2]=" <<((unsigned int*)tmp)[2] << std::endl;
   std::cout << "APRES DECOMP [3]=" <<((unsigned int*)tmp)[3] << std::endl;
+  printf("memcpy(%p, %p, %d)\n", _resultDec, tmp, size);*/
+
   ::memcpy(_resultDec, tmp, size);
-  std::cout << "APRES DECOMP2 [0]=" <<((unsigned int*)_resultDec)[0] << std::endl;
+
+  /*std::cout << "APRES DECOMP2 [0]=" <<((unsigned int*)_resultDec)[0] << std::endl;
   std::cout << "APRES DECOMP2 [1]=" <<((unsigned int*)_resultDec)[1] << std::endl;
   std::cout << "APRES DECOMP2 [2]=" <<((unsigned int*)_resultDec)[2] << std::endl;
   std::cout << "APRES DECOMP2 [3]=" <<((unsigned int*)_resultDec)[3] << std::endl;*/
@@ -217,6 +224,10 @@ void VideoCodec::decode(uint8_t *img)
 	  //img[pos]   = 0;
 	}
     }
+  else if (*((unsigned int *)_resultDec) == 0x44444444)
+    {
+      ::memcpy(img, _resultDec, _width*_heigth*3);
+    }
   else
     {
       std::cout << "decode(): error (Wrong magic number)." << std::endl;
@@ -236,27 +247,36 @@ uint32_t VideoCodec::encode(uint8_t *img)
 {
   uint32_t x, y, c;
   uint32_t luma[8][8], chromaU[8][8], chromaV[8][8];
-  bool diffFlag = false;
+  int diffFlag = 0;
 
   _buffsize = 4; /* MAGIC NUMBER */
-  for (y = 0; y < _width*_heigth*3; y += 3)
+  /*for (y = 0; y < _width*_heigth*3; y += 3)
     {
       c = img[y+2];
       img[y+2] = img[y];
       img[y] = c;
-    }
+    }*/
 
   if ((_numb++ % KEY_FREQ) && _nextIsKeyframe == false) /* Make a frame diff */
     {
       *((unsigned int *)_result) = 0x43434343;
       if (diff(img) == 1)
 	{
-	  diffFlag = true;
+	  diffFlag = 1;
 	  //std::cout << std::endl;
-	  //std::cout << "Buffer size (diff) : " << _buffsize << std::endl;
+	  std::cout << "Buffer size (diff) : " << _buffsize << std::endl;
 	}
+      else
+	diffFlag = -1;
     }
-  if (diffFlag == false)//!(_numb++ % KEY_FREQ)) /* Make a keyframe */
+  if (diffFlag == -1)
+    {
+      ::memcpy(_result, img, _width*_heigth*3);
+      *((unsigned int *)_result) = 0x44444444; // Magic number overwrite 4 bytes...
+      _buffsize = 640*480*3;
+      std::cout << "Buffer size (FULL) : " << _buffsize << std::endl;
+    }
+  else if (diffFlag == 0)//!(_numb++ % KEY_FREQ)) /* Make a keyframe */
     {
       _nextIsKeyframe = false;
       *((unsigned int *)_result) = 0x42424242;
@@ -339,7 +359,7 @@ uint32_t VideoCodec::encode(uint8_t *img)
 	//std::cout << "y = " << y << std::endl;
 	}
       //std::cout << std::endl;
-      //std::cout << "Buffer size (RLE) : " << _buffsize << std::endl;
+      std::cout << "Buffer size (RLE) : " << _buffsize << std::endl;
       //std::cout << "Ratio : " << ((float)_buffsize) / 921600.0 << std::endl;
     }
 
@@ -350,15 +370,16 @@ uint32_t VideoCodec::encode(uint8_t *img)
   std::cout << "AVANT COMP [1]=" <<((unsigned int*)_result)[1] << std::endl;
   std::cout << "AVANT COMP [2]=" <<((unsigned int*)_result)[2] << std::endl;
   std::cout << "AVANT COMP [3]=" <<((unsigned int*)_result)[3] << std::endl;
-  std::cout << std::endl;
-  huffman.compress(_result, _buffsize);
-  ::memcpy(_result, huffman.getBuffer(), (_buffsize = huffman.getSize()));  
+  std::cout << std::endl;*/
 
-  std::cout << "APRES COMP [0]=" <<((unsigned int*)_result)[0] << std::endl;
+  huffman.compress(_result, _buffsize);
+  ::memcpy(_result, huffman.getBuffer(), (_buffsize = huffman.getSize()));
+  std::cout << "Buffer size (Huff): " << _buffsize << std::endl;  
+
+  /*std::cout << "APRES COMP [0]=" <<((unsigned int*)_result)[0] << std::endl;
   std::cout << "APRES COMP [1]=" <<((unsigned int*)_result)[1] << std::endl;
   std::cout << "APRES COMP [2]=" <<((unsigned int*)_result)[2] << std::endl;
   std::cout << "APRES COMP [3]=" <<((unsigned int*)_result)[3] << std::endl;
-  std::cout << "Buffer size (Huff): " << _buffsize << std::endl;
   std::cout << std::endl;*/
 
   /*uint8_t *tmp;
@@ -371,14 +392,14 @@ uint32_t VideoCodec::encode(uint8_t *img)
   std::cout << "APRES DECOMP [3]=" <<((unsigned int*)tmp)[3] << std::endl;
   ::memcpy(_result, tmp, (_buffsize = huffman.getSize()));*/
 
-  //std::cout << "Ratio : " << ((float)_buffsize) / 921600.0 << std::endl;
+  std::cout << "Ratio : " << ((float)_buffsize) / 921600.0 << std::endl;
   return _buffsize;
 }
 
 int VideoCodec::diff(uint8_t *img)
 {
   unsigned int i;
-  const int threshold = 5;
+  const int threshold = 6;
   bool tooMuch = false;
   uint32_t backBuffSize = _buffsize;
   

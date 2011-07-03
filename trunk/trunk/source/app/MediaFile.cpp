@@ -115,7 +115,7 @@ uint8_t* MediaFile::GetNextVideoFrame()
   if (!bytes)
     return 0;
   //std::cout << "readed size :" << siz << std::endl; 
-  buff = new uint8_t[siz];
+  buff = new uint8_t[/*siz*/640*480*3];
   bytes = _fileStream->readRawData ((char *)(buff), siz);
   return buff;
 }
