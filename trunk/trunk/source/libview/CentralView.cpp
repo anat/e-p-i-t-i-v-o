@@ -48,6 +48,7 @@ void CentralView::OpenCameraDevice()
   {
     this->clearPlayerView();
     this->clearCameraView();
+
   }
 
   this->createCameraView();
@@ -56,11 +57,13 @@ void CentralView::OpenCameraDevice()
   //this->setPlayingMediaState();
 
   _cameraView->StartCam();
-
+    QApplication::processEvents();
 }
 
 CameraView* CentralView::createCameraView()
 {
+     //vm::CameraVM::DelInstance();
+    // vm::CameraVM::GetInstance();
   if (_cameraView == 0)
     _cameraView = new CameraView;
   this->setCameraViewQtConnects(true);
@@ -83,7 +86,9 @@ void CentralView::setCameraViewQtConnects(bool state)
   if (state)
   {
     connect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
-    connect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(recordCam()));
+    connect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(StartCam()));
+
+    connect(ui->recBtn, SIGNAL(clicked()), _cameraView, SLOT(recordCam()));
 
     connect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
     connect(ui->stopBtn, SIGNAL(clicked()), _cameraView, SLOT(stopRecCam()));
@@ -97,11 +102,13 @@ void CentralView::setCameraViewQtConnects(bool state)
     disconnect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
     disconnect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(StartCam()));
 
+    disconnect(ui->recBtn, SIGNAL(clicked()), _cameraView, SLOT(recordCam()));
+
     disconnect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
-    disconnect(ui->stopBtn, SIGNAL(clicked()), _cameraView, SLOT(StopCam()));
+    disconnect(ui->stopBtn, SIGNAL(clicked()), _cameraView, SLOT(stopRecCam()));
 
     disconnect(ui->pauseBtn, SIGNAL(clicked()), this, SLOT(setPausedMediaState()));
-    disconnect(ui->pauseBtn, SIGNAL(clicked()), _cameraView, SLOT(PauseCam()));
+    disconnect(ui->pauseBtn, SIGNAL(clicked()), _cameraView, SLOT(pauseRecCam()));
   }
 }
 
