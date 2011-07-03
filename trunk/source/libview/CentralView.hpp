@@ -28,8 +28,8 @@ class CentralView : public QWidget
 
     public slots:
       void OpenFile();
-    void OpenCameraDevice();
-
+      void OpenCameraDevice();
+      void OpenPlayList();
   private slots:
 
     void setPlayingMediaState();
