@@ -128,8 +128,12 @@ namespace vm
         }
         nFrame.scaled(_surface->size());
         _surface->setPixmap(QPixmap::fromImage(nFrame).scaled(_surface->size()));
+
+        QApplication::processEvents();
+         QCoreApplication::sendPostedEvents();
         usleep(100000);
         QApplication::processEvents();
+         QCoreApplication::sendPostedEvents();
         //QCoreApplication::sendPostedEvents(NULL, 0);
       }
       else
