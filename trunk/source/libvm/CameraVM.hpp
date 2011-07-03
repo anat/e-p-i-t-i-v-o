@@ -41,6 +41,8 @@ namespace vm
     void StopRecCam();
     void PauseRecCam();
 
+    void saveFile(QWidget * widget);
+
     std::set<int> const & getCamDevices() ;
 
   protected:
@@ -63,7 +65,7 @@ namespace vm
     QLabel * _surface;
 
     QImage ConvertIplImgtoQBitmpat(IplImage* img);
-    void saveFile();
+
 
     MediaFile* _record;
 

@@ -181,21 +181,26 @@ namespace vm
     {
       _isStop = true;
       _surface->clear();
-      this->saveFile();
     }
   }
 
-  void CameraVM::saveFile()
+  void CameraVM::saveFile(QWidget * widget)
   {
-      QString homePath("untitled.epitivo");
+      QFile tmpFile(QDir::homePath()+"/.temp.epitivo");
+
+      QString homePath("/untitled.epitivo");
+
       homePath.insert(0, QDir::homePath());
 
-      QString fileName = QFileDialog::getSaveFileName(0,
+      QString fileName = QFileDialog::getSaveFileName(widget,
                                   tr("Save File"),
                                   homePath,
                                   tr("Epitivo (*.epitivo)"));
-
-        // cp tmp file to filename
+      if (tmpFile.exists())
+      {
+        tmpFile.copy(fileName);
+        tmpFile.remove();
+       }
   }
 
   void CameraVM::PauseCam()
@@ -252,7 +257,7 @@ namespace vm
     {
       QString homePath = QDir::homePath();
       std::cout << "Start recording " << std::endl;
-      _record = new MediaFile(homePath+"/test.epitivo", true, Video);
+      _record = new MediaFile(homePath+"/.temp.epitivo", true, Video);
       _record->Start();
       _isRecording = true;
     }
