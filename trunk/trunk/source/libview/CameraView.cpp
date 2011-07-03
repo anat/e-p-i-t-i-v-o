@@ -34,6 +34,10 @@ void CameraView::StartCam()
         _vm->StartCam();
 
     }
+    else if (_isRecording)
+    {
+        _vm->StartRecordCam(); // reprise sur rec
+    }
     else
          std::cout << "Ko" << std::endl;
 }
@@ -45,7 +49,7 @@ void CameraView::StopCam()
     {
         _isCamActive = false;
         std::cout << "Ok" << std::endl;
-     _vm->StopCam();
+        _vm->StopCam();
     }
     else
          std::cout << "Ko" << std::endl;
