@@ -71,6 +71,7 @@ void CameraView::stopRecCam()
     {
         _isRecording = false;
       _vm->StopRecCam();
+      _vm->saveFile(this);
     }
     else if (_isCamActive)
     {
