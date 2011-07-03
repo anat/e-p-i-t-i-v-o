@@ -56,7 +56,7 @@ namespace vm
     _isStop = false;
 
     VideoCodec *codec = new VideoCodec(640, 480, COLOR_BGR);
-
+    std::cout << "cam device : " << _cameras << std::endl;
     CvCapture* capture = cvCaptureFromCAM(_cameras);
     if(capture)
     {
