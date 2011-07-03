@@ -9,7 +9,6 @@ CentralView::CentralView(QWidget *parent) :
   ui->setupUi(this);
   _vm = vm::CentralVM::GetInstance();
 
-  ui->pauseBtn->setVisible(false);
   _isPaused = false;
 }
 
@@ -85,30 +84,30 @@ void CentralView::setCameraViewQtConnects(bool state)
 {
   if (state)
   {
-    connect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
+    //connect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
     connect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(StartCam()));
 
-    connect(ui->recBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
+    //connect(ui->recBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
     connect(ui->recBtn, SIGNAL(clicked()), _cameraView, SLOT(recordCam()));
 
-    connect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
+    //connect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
     connect(ui->stopBtn, SIGNAL(clicked()), _cameraView, SLOT(stopRecCam()));
 
-    connect(ui->pauseBtn, SIGNAL(clicked()), this, SLOT(setPausedMediaState()));
+    //connect(ui->pauseBtn, SIGNAL(clicked()), this, SLOT(setPausedMediaState()));
     connect(ui->pauseBtn, SIGNAL(clicked()), _cameraView, SLOT(pauseRecCam()));
   }
   else
   {
     // disconnects
-    disconnect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
+    //disconnect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
     disconnect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(StartCam()));
 
     disconnect(ui->recBtn, SIGNAL(clicked()), _cameraView, SLOT(recordCam()));
 
-    disconnect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
+    //disconnect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
     disconnect(ui->stopBtn, SIGNAL(clicked()), _cameraView, SLOT(stopRecCam()));
 
-    disconnect(ui->pauseBtn, SIGNAL(clicked()), this, SLOT(setPausedMediaState()));
+    //disconnect(ui->pauseBtn, SIGNAL(clicked()), this, SLOT(setPausedMediaState()));
     disconnect(ui->pauseBtn, SIGNAL(clicked()), _cameraView, SLOT(pauseRecCam()));
   }
 }

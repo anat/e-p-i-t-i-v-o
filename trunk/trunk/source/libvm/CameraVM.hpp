@@ -63,6 +63,7 @@ namespace vm
     QLabel * _surface;
 
     QImage ConvertIplImgtoQBitmpat(IplImage* img);
+    void saveFile();
 
     MediaFile* _record;
 

@@ -80,7 +80,7 @@ void CameraView::stopRecCam()
 
 void CameraView::pauseRecCam()
 {
-    if (_isRecording && _isCamActive)
+    if (_isCamActive)
     {
         _vm->PauseRecCam();
     }
