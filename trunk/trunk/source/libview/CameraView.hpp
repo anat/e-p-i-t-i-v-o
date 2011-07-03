@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QApplication>
 #include "libvm/CameraVM.hpp"
+#include "DeviceSelectView.hpp"
 
 namespace Ui {
     class CameraView;
@@ -39,6 +40,10 @@ class CameraView : public QWidget
 
 
     QString _selected;
+
+    DeviceSelectView*   _deviceSelectView;
+  DeviceSelectView* createDeviceSelectView();
+  void clearDeviceSelectView();
 
     void selectInputDevice();
 };

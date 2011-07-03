@@ -156,6 +156,9 @@ void CentralView::setPlayerViewQtConnects(bool state)
     disconnect(ui->pauseBtn, SIGNAL(clicked()), _playerView, SLOT(Pause()));
   }
 }
+
+
+
 void CentralView::setPlayingMediaState()
 {
     ui->playBtn->setVisible(false);

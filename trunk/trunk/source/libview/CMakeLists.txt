@@ -7,6 +7,7 @@ SET(moc_headers
 	CentralView.hpp
         CameraView.hpp
 	PlayerView.hpp
+	DeviceSelectView.hpp
         playlistwidget.hpp
 )
 SET(sources
@@ -15,6 +16,7 @@ SET(sources
         CameraView.cpp
         PlayerView.cpp
         playlistwidget.cpp
+	DeviceSelectView.cpp
 )
 
 SET(forms
@@ -22,6 +24,7 @@ SET(forms
 	CentralView.ui
         CameraView.ui
 	PlayerView.ui
+	DeviceSelectView.ui
         playlistwidget.ui
 )
 SET(resources
