@@ -35,6 +35,7 @@ class CentralView : public QWidget
     void setPausedMediaState();
     void setStoppedMediaState();
 
+
   private:
     Ui::CentralView *ui;
 
@@ -43,6 +44,7 @@ class CentralView : public QWidget
     CameraView*   _cameraView;
     PlayerView*   _playerView;
 
+    bool _isPaused;
     void setCameraViewQtConnects(bool state);
     void setPlayerViewQtConnects(bool state);
 

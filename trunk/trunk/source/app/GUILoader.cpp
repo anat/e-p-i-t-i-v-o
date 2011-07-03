@@ -1,5 +1,7 @@
 #include <string>
 #include "GUILoader.hpp"
+#include <QDesktopWidget>
+#include <QRect>
 
 static const QString AppName = "Epitivo";
 
@@ -15,6 +17,14 @@ GUILoader::GUILoader(int & argc, char ** argv) :
 	_centralVM = vm::CentralVM::GetInstance();
 	_cameraVM = vm::CameraVM::GetInstance();
 	_playerVM = vm::PlayerVM::GetInstance();
+
+        QDesktopWidget bureau;
+        QRect surface_bureau = bureau.screenGeometry();
+        int x = surface_bureau.width()/2 - _mainWindow->width()/2;
+        int y = surface_bureau.height()/2 - _mainWindow->height()/2;
+        y -= (int)y*0.2;
+        _mainWindow->move(x,y);
+
 }
 
 GUILoader::~GUILoader()

@@ -10,6 +10,7 @@ CentralView::CentralView(QWidget *parent) :
   _vm = vm::CentralVM::GetInstance();
 
   ui->pauseBtn->setVisible(false);
+  _isPaused = false;
 }
 
 CentralView::~CentralView()
@@ -48,8 +49,14 @@ void CentralView::OpenCameraDevice()
     this->clearPlayerView();
     this->clearCameraView();
   }
+
   this->createCameraView();
+
   ui->centralContainer->addWidget(_cameraView);
+  //this->setPlayingMediaState();
+
+  _cameraView->StartCam();
+
 }
 
 CameraView* CentralView::createCameraView()
@@ -76,13 +83,13 @@ void CentralView::setCameraViewQtConnects(bool state)
   if (state)
   {
     connect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
-    connect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(StartCam()));
+    connect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(recordCam()));
 
     connect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
-    connect(ui->stopBtn, SIGNAL(clicked()), _cameraView, SLOT(StopCam()));
+    connect(ui->stopBtn, SIGNAL(clicked()), _cameraView, SLOT(stopRecCam()));
 
     connect(ui->pauseBtn, SIGNAL(clicked()), this, SLOT(setPausedMediaState()));
-    connect(ui->pauseBtn, SIGNAL(clicked()), _cameraView, SLOT(PauseCam()));
+    connect(ui->pauseBtn, SIGNAL(clicked()), _cameraView, SLOT(pauseRecCam()));
   }
   else
   {
@@ -146,16 +153,19 @@ void CentralView::setPlayingMediaState()
 {
     ui->playBtn->setVisible(false);
     ui->pauseBtn->setVisible(true);
+    _isPaused = false;
 }
 
 void CentralView::setPausedMediaState()
 {
     ui->playBtn->setVisible(true);
     ui->pauseBtn->setVisible(false);
+    _isPaused = true;
 }
 
 void CentralView::setStoppedMediaState()
 {
     ui->playBtn->setVisible(true);
     ui->pauseBtn->setVisible(false);
+    _isPaused = false;
 }
