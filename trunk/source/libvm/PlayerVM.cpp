@@ -137,7 +137,13 @@ namespace vm
         //QCoreApplication::sendPostedEvents(NULL, 0);
       }
       else
+      {
+          QApplication::processEvents();
+           QCoreApplication::sendPostedEvents();
         cvWaitKey(500);
+        QApplication::processEvents();
+         QCoreApplication::sendPostedEvents();
+        }
     }
   }
 

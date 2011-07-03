@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <QFileDialog>
-
+#include <QApplication>
 
 namespace vm
 {
@@ -156,10 +156,20 @@ namespace vm
               QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
               _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
           }
+          QApplication::processEvents();
+           QCoreApplication::sendPostedEvents();
           cvWaitKey();	  
+          QApplication::processEvents();
+           QCoreApplication::sendPostedEvents();
         }
         else
+        {
+            QApplication::processEvents();
+             QCoreApplication::sendPostedEvents();
           cvWaitKey(350);
+          QApplication::processEvents();
+           QCoreApplication::sendPostedEvents();
+      }
       }
       cvReleaseCapture(&capture);
     } // ~capture
