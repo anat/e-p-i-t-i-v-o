@@ -14,6 +14,7 @@
 #include "PlayerView.hpp"
 #include "libvm/CameraVM.hpp"
 
+
 namespace Ui {
   class CentralView;
 }
@@ -27,7 +28,7 @@ class CentralView : public QWidget
     ~CentralView();
 
     public slots:
-      void OpenFile();
+    void OpenFile();
       void OpenCameraDevice();
       void OpenPlayList();
   private slots:
@@ -45,6 +46,7 @@ class CentralView : public QWidget
     CameraView*   _cameraView;
     PlayerView*   _playerView;
 
+
     bool _isPaused;
     void setCameraViewQtConnects(bool state);
     void setPlayerViewQtConnects(bool state);
@@ -54,6 +56,8 @@ class CentralView : public QWidget
 
     PlayerView* createPlayerView();
     void clearPlayerView();
+
+
 
 };
 

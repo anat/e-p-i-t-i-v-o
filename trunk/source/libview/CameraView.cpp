@@ -6,13 +6,16 @@
 
 CameraView::CameraView(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CameraView)
+    ui(new Ui::CameraView),
+    _deviceSelectView(0)
 {
     ui->setupUi(this);
 
   _vm = vm::CameraVM::GetInstance();
   _vm->mapSurface(ui->imgBoxLabel);
 
+  this->createDeviceSelectView();
+  _deviceSelectView->exec();
  //this->selectInputDevice();
     _isRecording = false;
     _isCamActive = false;
@@ -88,7 +91,7 @@ void CameraView::pauseRecCam()
 }
 void CameraView::selectInputDevice()
 {
-  QDialog dialog;
+  QDialog dialog(this);
 
   QPushButton buttonAccept("OK");
     QPushButton buttonReject("Cancel");
@@ -126,11 +129,9 @@ void CameraView::selectInputDevice()
   layout.addItem(&layout1);
   layout.addItem(&layout2);
 
-  std::cout << "ddddddddddd" << std::endl;
   dialog.setLayout(&layout);
-  dialog.exec();
-  std::cout << "ddddddddffffffffffff" << std::endl;
-  if (dialog.result() == QDialog::Accepted)
+
+  if (dialog.exec() == QDialog::Accepted)
   {
     _selected = combo.currentText();
     _vm->_cameras = atoi((_selected.toStdString()).c_str());
@@ -138,5 +139,20 @@ void CameraView::selectInputDevice()
   }
   else
       _vm->_cameras = 0;
-  std::cout << "mmmm" << std::endl;
+
+}
+DeviceSelectView* CameraView::createDeviceSelectView()
+{
+  if (_deviceSelectView == 0)
+    _deviceSelectView = new DeviceSelectView;
+  return _deviceSelectView;
+}
+
+void CameraView::clearDeviceSelectView()
+{
+  if (_deviceSelectView != 0)
+  {
+    delete _deviceSelectView;
+    _deviceSelectView = 0;
+  }
 }
