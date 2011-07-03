@@ -17,6 +17,7 @@ namespace vm
     _isRecording = false;
     _isPauseRecording = false;
     _hasBeenPause = false;
+    _pushForever = false;
   }
   CameraVM::~CameraVM()
   {
@@ -74,68 +75,75 @@ namespace vm
           if (_isRecording)
           {
 	    uint8_t * buff2;//  =  new uint8_t[640 * 480 * 3];
-	    uint8_t * buff3  =  new uint8_t[640 * 480 * 3 * 10];
-	    uint8_t * buff4  =  new uint8_t[640 * 480 * 3 * 10];
-	    uint8_t * buff5  =  new uint8_t[640 * 480 * 3 * 10];
+	    uint8_t * buff3  =  new uint8_t[640 * 480 * 3];
+	    uint8_t * buff4  =  new uint8_t[640 * 480 * 3];
+	    //uint8_t * buff5  =  new uint8_t[640 * 480 * 3];
 	    uint32_t bsize;
+
+	    if (_isPauseRecording && !_firstPauseFrame)
+	      {
+		codec->nextFrameIsKeyframe();
+		_firstPauseFrame++;
+	      }
+	    if (!_isPauseRecording)
+	      _firstPauseFrame = 0;
+
             // dans tt les cas capture + enc + ecriture frame courante
             int buffSize = codec->encode((uint8_t *) frame->imageData);
+	    //printf("memcpy(%p, %p, %d);\n", buff3, codec->getProcessedImg(), buffSize);
+	    memset(buff3, 0, buffSize);
+	    //printf("memcopy ok1\n");
 	    memcpy(buff3, codec->getProcessedImg(), buffSize);
-	    static int test = 0;
+	    //printf("memcopy ok\n");
 
-	    std::cout << "Addviedeo(diff) : " << buffSize << std::endl;
+	    //std::cout << "Addvideo() : " << buffSize << std::endl;
             _record->AddVideoFrame(buff3, buffSize);
 
-            if (_isPauseRecording)
+	    /*            if (_isPauseRecording)
             {
               //  frame courante enc add au cache -> no refresh img
               std::cout << "Pause direct but recording" << std::endl;
-	      printf(">>%p\n", buff3);
-              _cachedEncFrames.push(/*std::pair<int, uint8_t*>(buffSize, encImg)*/buff3);
-	      /*if (test == 0)
-		{
-		  printf("======== %p === %d ===============\n", buff3, *((unsigned int *)buff3));
-		  memcpy(buff5, buff3, buffSize);
-		  printf("======= %p ==== %d ===============\n", buff5, *((unsigned int *)buff5));
-		  bsize = buffSize;
-		  test++;
-		  }*/
+	      //printf(">>%p\n", buff3);
+              _cachedEncFrames.push(buff3);
+	      //_cachedEncFrames.push(std::pair<int, uint8_t*>(buffSize, encImg));
+
             }
-            else
+            else*/
+	    if (_isPauseRecording || _pushForever)
+	      {
+		_pushForever = true;
+		//std::cout << "Pause And Push !!!" << std::endl;
+		_cachedEncFrames.push(buff3);
+	      }
+	    std::cout << "Queuesize: " << _cachedEncFrames.size() << std::endl;
+	    if (!_isPauseRecording)
             {
               // + capture + encodage frame courante
               if (_cachedEncFrames.size() > 0)
               {
                 // recup de la plus vieille frame -> decodage -> affichage
-                std::cout << "Delay playing while recording" << std::endl;
+                std::cout << "  Delay playing while recording" << std::endl;
                 //std::pair<int, uint8_t*> const & cache = _cachedEncFrames.front();
 		buff2 = _cachedEncFrames.front();
-		printf("<<%p\n", buff2);
+		//printf("<<%p\n", buff2);
                 codec->setResultBuff(buff2);// BUFFER COMPRESSE
-		std::cout << "ttttttttttt" << std::endl;
-		/*if (test == 1)
-		  {
-		    printf("======== %p === %d ===============\n", buff2, *((unsigned int *)buff2));
-		    printf("======= %p ==== %d ===============\n", buff5, *((unsigned int *)buff5));
-		    printf("cmp=%d\n", memcmp(buff2, buff5, bsize));
-		    test++;
-		    }*/
+		//printf("decode(%p)\n", buff4);
                 codec->decode(buff4); // BUFFER DECOMP
-		std::cout << "sssssssssssssss" << std::endl;
+		//std::cout << "DISPLAY" << std::endl;
                 QImage nFrame(buff4, 640, 480, QImage::Format_RGB888 );
 
                 nFrame.scaled(_surface->size());
                 _surface->setPixmap(QPixmap::fromImage(nFrame).scaled(_surface->size()));
 		_cachedEncFrames.pop();
 
-		delete buff2;
+		delete buff2; //delete?
 		delete buff4;
 		//delete cache.second;
               }
               else
               {
                 //  -> affichage
-                std::cout << "Normal recording" << std::endl;
+                std::cout << "  Normal recording" << std::endl;
                 QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
                 _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
 		}
@@ -146,9 +154,7 @@ namespace vm
               QImage snapshot = ConvertIplImgtoQBitmpat(frame).scaled(_surface->size());
               _surface->setPixmap(QPixmap::fromImage(snapshot).scaled(_surface->size()));
           }
-	  std::cout << "tototototot" << std::endl;
-          cvWaitKey();
-	  
+          cvWaitKey();	  
         }
         else
           cvWaitKey(350);

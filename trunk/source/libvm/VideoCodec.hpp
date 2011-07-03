@@ -28,12 +28,14 @@ private:
   uint16_t       _heigth;
   enum colorType _type;       /* RGB || BGR              */
   uint8_t       *_result;     /* Compressed image buffer */
+  uint8_t       *_resultDec;     /* Compressed image buffer */
   uint8_t       *_last;
   uint8_t       *_last2;
   //uint8_t       *_truc;
+  bool           _nextIsKeyframe;
   uint32_t       _buffsize;   /* Compressed data size    */
   uint32_t       _numb;       /* Current frame number    */
-  uint32_t       _numb2;      /* Current frame number (Decode)   */
+  //uint32_t       _numb2;      /* Current frame number (Decode)   */
   //double         _pcos[8][8]; /* Precalculated cosinus   */
   //double         _ppcos[8][8][8][8]; /* Precalculated cosinus   */
   double         _pppcos[256][8][8][8][8]; /* Precalculated cosinus   */
@@ -47,6 +49,7 @@ public:
   void     decode(uint8_t *img);
   uint8_t *getProcessedImg()     const;
   void setResultBuff(uint8_t *res);
+  void nextFrameIsKeyframe();
 
 private:
   /* Image compression */
@@ -62,7 +65,7 @@ private:
   void iquantization(int32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chromaV[8][8]);
   int  dct(uint32_t m[8][8], uint8_t u, uint8_t v);
   int  idct(int32_t m[8][8], uint8_t x, uint8_t y);
-  void diff(uint8_t *img);
+  int diff(uint8_t *img);
 
 
   /* Run Length Encoding */

@@ -26,11 +26,14 @@ VideoCodec::VideoCodec(int width, int heigth, enum colorType color)
   _heigth = heigth;
   _type   = color;
   _result = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
+  printf("_result is %p\n", _result);
+  _resultDec = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
   _last   = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
   _last2  = new uint8_t[width * heigth * 3 * 4]; // VIRER LE * 2 QUAND RLE + HUFFMAN
   //_bdiff  = new uint8_t[width * heigth * 3 * 2]; // VIRER LE * 2 QUAND RLE + HUFFMAN
   _numb   = 0;
-  _numb2   = 0;
+  _nextIsKeyframe = false;
+  //_numb2   = 0;
 
   /*for (x = 0; x < 8; x++)
     for (i = 0; i < 8; i++)
@@ -51,12 +54,17 @@ VideoCodec::VideoCodec(int width, int heigth, enum colorType color)
 
 VideoCodec::~VideoCodec()
 {
-  if (_result)
+  /*  if (_result)
     delete _result;
   if (_last)
     delete _last;
   if (_last2)
-    delete _last2;
+  delete _last2;*/
+}
+
+void VideoCodec::nextFrameIsKeyframe()
+{
+  _nextIsKeyframe = true;
 }
 
 uint8_t *VideoCodec::getProcessedImg() const
@@ -66,7 +74,7 @@ uint8_t *VideoCodec::getProcessedImg() const
 
 void VideoCodec::setResultBuff(uint8_t *res)
 {
-  _result = res;
+  _resultDec = res;
 }
 
 void VideoCodec::decode(uint8_t *img)
@@ -75,24 +83,35 @@ void VideoCodec::decode(uint8_t *img)
   uint32_t luma[8][8], chromaU[8][8], chromaV[8][8];
   uint8_t *tmp;
   char c;
+  unsigned int size;
   
-  _buffsize = 0;
+    /*{
+      std::cout << "decode(): error (Wrong magic number)." << std::endl;
+      ::exit(1);
+      }*/
   /*std::cout << std::endl;
-  std::cout << "AVANT DECOMP[0]=" <<((unsigned int*)_result)[0] << std::endl;
-  std::cout << "AVANT DECOMP[1]=" <<((unsigned int*)_result)[1] << std::endl;
-  std::cout << "AVANT DECOMP[2]=" <<((unsigned int*)_result)[2] << std::endl;
-  std::cout << "AVANT DECOMP[3]=" <<((unsigned int*)_result)[3] << std::endl;
+  std::cout << "AVANT DECOMP[0]=" <<((unsigned int*)_resultDec)[0] << std::endl;
+  std::cout << "AVANT DECOMP[1]=" <<((unsigned int*)_resultDec)[1] << std::endl;
+  std::cout << "AVANT DECOMP[2]=" <<((unsigned int*)_resultDec)[2] << std::endl;
+  std::cout << "AVANT DECOMP[3]=" <<((unsigned int*)_resultDec)[3] << std::endl;
   std::cout << std::endl;
-  huffman.uncompress(_result);
-  std::cout << "UNCOMPRESS OK (datasize="<< huffman.getSize() << ")"<< std::endl;
+  huffman.uncompress(_resultDec);
+  size = huffman.getSize();
+  std::cout << "UNCOMPRESS OK (datasize="<< size << ")"<< std::endl;
   tmp = huffman.getBuffer();
   std::cout << "APRES DECOMP [0]=" <<((unsigned int*)tmp)[0] << std::endl;
   std::cout << "APRES DECOMP [1]=" <<((unsigned int*)tmp)[1] << std::endl;
   std::cout << "APRES DECOMP [2]=" <<((unsigned int*)tmp)[2] << std::endl;
   std::cout << "APRES DECOMP [3]=" <<((unsigned int*)tmp)[3] << std::endl;
-  ::memcpy(_result, tmp, huffman.getSize());  */
+  ::memcpy(_resultDec, tmp, size);
+  std::cout << "APRES DECOMP2 [0]=" <<((unsigned int*)_resultDec)[0] << std::endl;
+  std::cout << "APRES DECOMP2 [1]=" <<((unsigned int*)_resultDec)[1] << std::endl;
+  std::cout << "APRES DECOMP2 [2]=" <<((unsigned int*)_resultDec)[2] << std::endl;
+  std::cout << "APRES DECOMP2 [3]=" <<((unsigned int*)_resultDec)[3] << std::endl;*/
 
-  if (!(_numb2++ % KEY_FREQ)) /* Extract a keyframe */
+  _buffsize = 4;
+  if (*((unsigned int *)_resultDec) == 0x42424242)
+  //if (!(_numb2++ % KEY_FREQ)) /* Extract a keyframe */
     {
       for (y = 0; y < _heigth; y += 8)
 	{
@@ -172,11 +191,11 @@ void VideoCodec::decode(uint8_t *img)
 	}
       //std::cout << "Decode keyframe" << std::endl;
     }
-  else
+  else if (*((unsigned int *)_resultDec) == 0x43434343)
     {
       ::memcpy(img, _last2, _width*_heigth*3);
 
-      int i = 0, nb = (((unsigned int *)_result)[0] - 4) / 7;
+      int i = 0, nb = (((unsigned int *)_resultDec)[1] - 4) / 7;
       unsigned int pos;
 
       //std::cout << "Decode diff: " << nb << std::endl;
@@ -184,12 +203,12 @@ void VideoCodec::decode(uint8_t *img)
 
       while (i++ < nb)
 	{
-	  pos = ((unsigned int *)(_result + _buffsize))[0];
+	  pos = ((unsigned int *)(_resultDec + _buffsize))[0];
 	  _buffsize += 4;
 	  //std::cout << "undiff (" << pos+2 << ")" << std::endl;
-	  img[pos+2] = *(_result + _buffsize++);
-	  img[pos+1] = *(_result + _buffsize++);
-	  img[pos+0] = *(_result + _buffsize++);
+	  img[pos+2] = *(_resultDec + _buffsize++);
+	  img[pos+1] = *(_resultDec + _buffsize++);
+	  img[pos+0] = *(_resultDec + _buffsize++);
 	  //std::cout << "undiff ok" << std::endl;
 
 	  //_buffsize += 3;
@@ -198,6 +217,12 @@ void VideoCodec::decode(uint8_t *img)
 	  //img[pos]   = 0;
 	}
     }
+  else
+    {
+      std::cout << "decode(): error (Wrong magic number)." << std::endl;
+      ::exit(1);
+    }
+
   /*for (y = 0; y < _width*_heigth*3; y += 3)
     {
       c = img[y+2];
@@ -211,16 +236,30 @@ uint32_t VideoCodec::encode(uint8_t *img)
 {
   uint32_t x, y, c;
   uint32_t luma[8][8], chromaU[8][8], chromaV[8][8];
+  bool diffFlag = false;
 
-  _buffsize = 0;
+  _buffsize = 4; /* MAGIC NUMBER */
   for (y = 0; y < _width*_heigth*3; y += 3)
     {
       c = img[y+2];
       img[y+2] = img[y];
       img[y] = c;
     }
-  if (!(_numb++ % KEY_FREQ)) /* Make a keyframe */
+
+  if ((_numb++ % KEY_FREQ) && _nextIsKeyframe == false) /* Make a frame diff */
     {
+      *((unsigned int *)_result) = 0x43434343;
+      if (diff(img) == 1)
+	{
+	  diffFlag = true;
+	  //std::cout << std::endl;
+	  //std::cout << "Buffer size (diff) : " << _buffsize << std::endl;
+	}
+    }
+  if (diffFlag == false)//!(_numb++ % KEY_FREQ)) /* Make a keyframe */
+    {
+      _nextIsKeyframe = false;
+      *((unsigned int *)_result) = 0x42424242;
       for (y = 0; y < _heigth; y += 8)
 	{
 	for (x = 0; x < _width; x += 8)
@@ -300,38 +339,48 @@ uint32_t VideoCodec::encode(uint8_t *img)
 	//std::cout << "y = " << y << std::endl;
 	}
       //std::cout << std::endl;
-      std::cout << "Buffer size (RLE) : " << _buffsize << std::endl;
+      //std::cout << "Buffer size (RLE) : " << _buffsize << std::endl;
       //std::cout << "Ratio : " << ((float)_buffsize) / 921600.0 << std::endl;
-    }
-  else /* Make a frame diff */
-    {
-      diff(img);
-      //std::cout << std::endl;
-      std::cout << "Buffer size (diff) : " << _buffsize << std::endl;
     }
 
   ::memcpy(_last, img, _width*_heigth*3);
-  /*std::cout << "AVANT COMP [0]=" <<((unsigned int*)_result)[0] << std::endl;
+
+  /*std::cout << "==============================" << std::endl;
+  std::cout << "AVANT COMP [0]=" <<((unsigned int*)_result)[0] << std::endl;
   std::cout << "AVANT COMP [1]=" <<((unsigned int*)_result)[1] << std::endl;
   std::cout << "AVANT COMP [2]=" <<((unsigned int*)_result)[2] << std::endl;
   std::cout << "AVANT COMP [3]=" <<((unsigned int*)_result)[3] << std::endl;
   std::cout << std::endl;
   huffman.compress(_result, _buffsize);
   ::memcpy(_result, huffman.getBuffer(), (_buffsize = huffman.getSize()));  
+
   std::cout << "APRES COMP [0]=" <<((unsigned int*)_result)[0] << std::endl;
   std::cout << "APRES COMP [1]=" <<((unsigned int*)_result)[1] << std::endl;
   std::cout << "APRES COMP [2]=" <<((unsigned int*)_result)[2] << std::endl;
   std::cout << "APRES COMP [3]=" <<((unsigned int*)_result)[3] << std::endl;
-  std::cout << "Buffer size (Huff): " << _buffsize << std::endl;*/
+  std::cout << "Buffer size (Huff): " << _buffsize << std::endl;
+  std::cout << std::endl;*/
+
+  /*uint8_t *tmp;
+  huffman.uncompress(_result);
+  std::cout << "UNCOMPRESS OK (datasize="<< huffman.getSize() << ")"<< std::endl;
+  tmp = huffman.getBuffer();
+  std::cout << "APRES DECOMP [0]=" <<((unsigned int*)tmp)[0] << std::endl;
+  std::cout << "APRES DECOMP [1]=" <<((unsigned int*)tmp)[1] << std::endl;
+  std::cout << "APRES DECOMP [2]=" <<((unsigned int*)tmp)[2] << std::endl;
+  std::cout << "APRES DECOMP [3]=" <<((unsigned int*)tmp)[3] << std::endl;
+  ::memcpy(_result, tmp, (_buffsize = huffman.getSize()));*/
 
   //std::cout << "Ratio : " << ((float)_buffsize) / 921600.0 << std::endl;
   return _buffsize;
 }
 
-void VideoCodec::diff(uint8_t *img)
+int VideoCodec::diff(uint8_t *img)
 {
   unsigned int i;
   const int threshold = 5;
+  bool tooMuch = false;
+  uint32_t backBuffSize = _buffsize;
   
   //printf("1 = %d %d %d %d\n", _last[0], _last[1], _last[2], _last[3]);
   //printf("2 = %d %d %d %d\n", img[0], img[1], img[2], img[3]);
@@ -343,6 +392,11 @@ void VideoCodec::diff(uint8_t *img)
           _last[i+1] > img[i+1]+threshold || _last[i+1] < img[i+1]-threshold ||
 	  _last[i+2] > img[i+2]+threshold || _last[i+2] < img[i+2]-threshold)
 	{
+	  if (_buffsize > 900000)
+	    {
+	      tooMuch = true;
+	      break;
+	    }
 	  ((unsigned int *)(_result + _buffsize))[0] = i;
 	  _buffsize += 4;
 	  *(_result + _buffsize++) = img[i+2];
@@ -350,9 +404,15 @@ void VideoCodec::diff(uint8_t *img)
 	  *(_result + _buffsize++) = img[i];
 	}
     }
+  if (tooMuch)
+    {
+      _buffsize = backBuffSize;
+      return (-1);
+    }
   //_buffsize = (_buffsize - 4) / 7;
-  ((unsigned int *)(_result))[0] = _buffsize;
+  ((unsigned int *)(_result))[1] = _buffsize;
   //std::cout << (_buffsize-4)/7 << " differents entries" << std::endl;
+  return (1);
 }
 
 
@@ -792,10 +852,10 @@ void VideoCodec::irle(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chro
   uint32_t tmp[64], tmp2;
   unsigned char size;
 
-  tmp[0] = *(short *)(_result + _buffsize);
-  size = *(_result + _buffsize + 2);
+  tmp[0] = *(short *)(_resultDec + _buffsize);
+  size = *(_resultDec + _buffsize + 2);
   //std::cout << "size is " << (int)size << std::endl;
-  decompressRle(_result + _buffsize + 3, &tmp[1], size);
+  decompressRle(_resultDec + _buffsize + 3, &tmp[1], size);
   /*std::cout << "-------------" << std::endl;
   std::cout << "dc : " << tmp[0] << std::endl;
   std::cout << "sz : " << (int)size << std::endl;
@@ -813,23 +873,23 @@ void VideoCodec::irle(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chro
   
   /*for (int i = 0; i < 8; i++)
     for (int j = 0; j < 8; j++)
-      luma[i][j] = *(_result + _buffsize + i*8 + j);
+      luma[i][j] = *(_resultDec + _buffsize + i*8 + j);
   _buffsize += 64;
 
   for (int i = 0; i < 8; i++)
     for (int j = 0; j < 8; j++)
-      chromaU[i][j] = *(_result + _buffsize + i*8 + j);
+      chromaU[i][j] = *(_resultDec + _buffsize + i*8 + j);
   _buffsize += 64;
 
   for (int i = 0; i < 8; i++)
     for (int j = 0; j < 8; j++)
-      chromaV[i][j] = *(_result + _buffsize + i*8 + j);
+      chromaV[i][j] = *(_resultDec + _buffsize + i*8 + j);
       _buffsize += 64;*/
 
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
       {
-	tmp2 = *(_result + _buffsize + i*4 + j);
+	tmp2 = *(_resultDec + _buffsize + i*4 + j);
 	chromaU[(i<<1)][(j<<1)]     = tmp2;
 	chromaU[(i<<1)+1][(j<<1)]   = tmp2;
 	chromaU[(i<<1)][(j<<1)+1]   = tmp2;
@@ -839,7 +899,7 @@ void VideoCodec::irle(uint32_t luma[8][8], uint32_t chromaU[8][8], uint32_t chro
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
       {
-	tmp2 = *(_result + _buffsize + 16 + i*4 + j);
+	tmp2 = *(_resultDec + _buffsize + 16 + i*4 + j);
 	chromaV[(i<<1)][(j<<1)]     = tmp2;
 	chromaV[(i<<1)+1][(j<<1)]   = tmp2;
 	chromaV[(i<<1)][(j<<1)+1]   = tmp2;
@@ -881,7 +941,7 @@ void			VideoCodec::decompressRle(unsigned char *comp, uint32_t *dec, int size)
   int			nb;
   int			j=0;
 
-  for (int i = 0; /*i < 128 && */i < size; i++)
+  for (int i = 0; i < 128 && i < size; i++)
     {
       nb = comp[i];
       i++;
