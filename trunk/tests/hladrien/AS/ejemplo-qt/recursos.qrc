@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>games-highscores.png</file>
+        <file>get-hot-new-stuff.png</file>
+        <file>rating.png</file>
+    </qresource>
+</RCC>
