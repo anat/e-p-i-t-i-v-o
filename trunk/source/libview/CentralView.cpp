@@ -88,6 +88,7 @@ void CentralView::setCameraViewQtConnects(bool state)
     connect(ui->playBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
     connect(ui->playBtn, SIGNAL(clicked()), _cameraView, SLOT(StartCam()));
 
+    connect(ui->recBtn, SIGNAL(clicked()), this, SLOT(setPlayingMediaState()));
     connect(ui->recBtn, SIGNAL(clicked()), _cameraView, SLOT(recordCam()));
 
     connect(ui->stopBtn, SIGNAL(clicked()), this, SLOT(setStoppedMediaState()));
