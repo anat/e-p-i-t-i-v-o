@@ -3,6 +3,7 @@
 #include "QFileDialog"
 #include <QListWidgetItem>
 #include <fstream>
+#include <../libvm/PlayerVM.hpp>
 #define LIBRARY_FILE "videoLibrary"
 PlayListWidget *PlayListWidget::_instance = 0;
 
@@ -18,6 +19,7 @@ PlayListWidget::PlayListWidget(QWidget *parent) :
     QObject::connect(this->ui->btnLoad, SIGNAL(clicked()), this, SLOT(loadPlayList()));
     QObject::connect(this->ui->btnSave, SIGNAL(clicked()), this, SLOT(savePlayList()));
     QObject::connect(this->ui->btnDelete, SIGNAL(clicked()), this, SLOT(deleteFromPlayList()));
+    QObject::connect(this->ui->currentList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(startFromIndex(QModelIndex)));
 }
 
 PlayListWidget::~PlayListWidget()
@@ -66,7 +68,8 @@ void PlayListWidget::listvideos()
         {
             QDir current(line.c_str());
             foreach (QString s, current.entryList())
-                this->ui->myList->addItem(line.c_str() + QString("/") + s);
+                if (s != "." && s != ".." && s.mid(s.length() - 8) == ".epitivo")
+                    this->ui->myList->addItem(line.c_str() + QString("/") + s);
             paths.push_back(line);
         }
         ifs.close();
@@ -94,29 +97,15 @@ void PlayListWidget::loadPlayList()
     path = path.replace(".pepitivo", "");
     this->ui->lblPlayList->setText(path);
 
+    this->ui->currentList->clear();
     paths.clear();
     std::ifstream ifs(this->currentPlayListPath.c_str());
     std::string line;
     while(std::getline(ifs,line))
     {
-
- /*       QDir current(line.c_str());
-        foreach (QString s, current.entryList())
-            this->ui->myList->addItem(line.c_str() + QString("/") + s);
-        paths.push_back(line);*/
         this->ui->currentList->addItem(line.c_str());
     }
     ifs.close();
-
-/*
-    QFile f();
-    while (f.canReadLine())
-    {
-        QString line(f.readLine());
-
-    }
-    f.close();
-    */
 }
 
 void PlayListWidget::savePlayList()
@@ -136,4 +125,14 @@ void PlayListWidget::savePlayList()
         ofs << this->ui->currentList->item(i)->text().toStdString().c_str() << std::endl;
     }
     ofs.close();
+}
+
+void PlayListWidget::startFromIndex(QModelIndex i)
+{
+    if (this->ui->myList->currentItem())
+    {
+        vm::PlayerVM* p = vm::PlayerVM::GetInstance();
+        p->setFilepath(this->ui->myList->currentItem()->text());
+        p->Play();
+    }
 }

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <list>
+#include <QModelIndex>
 
 namespace Ui {
     class PlayListWidget;
@@ -30,6 +31,7 @@ public slots:
     void loadPlayList();
     void savePlayList();
     void deleteFromPlayList();
+    void startFromIndex(QModelIndex i);
 
 };
 
