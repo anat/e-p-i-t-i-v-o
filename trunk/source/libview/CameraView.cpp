@@ -10,15 +10,12 @@ CameraView::CameraView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-
-
   _vm = vm::CameraVM::GetInstance();
   _vm->mapSurface(ui->imgBoxLabel);
 
  //this->selectInputDevice();
-
-
+    _isRecording = false;
+    _isCamActive = false;
 }
 
 CameraView::~CameraView()
@@ -29,28 +26,60 @@ CameraView::~CameraView()
 
 void CameraView::StartCam()
 {
-  _vm->StartCam();
+    std::cout << "Start Cam ";
+    if (!_isCamActive)
+    {
+         _isCamActive = true;
+        std::cout << "Ok" << std::endl;
+        _vm->StartCam();
+
+    }
+    else
+         std::cout << "Ko" << std::endl;
 }
 
 void CameraView::StopCam()
 {
-  _vm->StopCam();
+    std::cout << "StopCam Cam ";
+    if (!_isCamActive)
+    {
+        _isCamActive = false;
+        std::cout << "Ok" << std::endl;
+     _vm->StopCam();
+    }
+    else
+         std::cout << "Ko" << std::endl;
 }
 
 
 void CameraView::recordCam()
 {
-  _vm->StartRecordCam();
+    if (_isCamActive && !_isRecording)
+    {
+        _isRecording = true;
+      _vm->StartRecordCam();
+    }
 }
 
 void CameraView::stopRecCam()
 {
-  _vm->StopRecCam();
+    if (_isRecording)
+    {
+        _isRecording = false;
+      _vm->StopRecCam();
+    }
+    else if (_isCamActive)
+    {
+        _vm->StopCam();
+    }
 }
 
 void CameraView::pauseRecCam()
 {
-  _vm->PauseRecCam();
+    if (_isRecording && _isCamActive)
+    {
+        _vm->PauseRecCam();
+    }
 }
 void CameraView::selectInputDevice()
 {

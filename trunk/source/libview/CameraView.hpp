@@ -8,7 +8,7 @@
 #include <QComboBox>
 #include <stdlib.h>
 #include <QPushButton>
-
+#include <QApplication>
 #include "libvm/CameraVM.hpp"
 
 namespace Ui {
@@ -32,6 +32,8 @@ class CameraView : public QWidget
     void pauseRecCam();
 
   private:
+    bool _isRecording;
+    bool _isCamActive;
     Ui::CameraView *ui;
     vm::CameraVM* _vm;
 

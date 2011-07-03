@@ -12,6 +12,7 @@
 #include "libvm/CentralVM.hpp"
 #include "CameraView.hpp"
 #include "PlayerView.hpp"
+#include "libvm/CameraVM.hpp"
 
 namespace Ui {
   class CentralView;
