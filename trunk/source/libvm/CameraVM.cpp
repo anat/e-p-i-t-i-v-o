@@ -195,7 +195,7 @@ namespace vm
       QString fileName = QFileDialog::getSaveFileName(widget,
                                   tr("Save File"),
                                   homePath,
-                                  tr("Epitivo (*.epitivo)"));
+				  tr("Epitivo (*.epitivo)")) + ".epitivo";
       if (tmpFile.exists())
       {
         tmpFile.copy(fileName);

@@ -8,7 +8,6 @@ namespace vm
 {
   class MainWindowVM : public QObject
   {
-    //TODO uncomment if slot + signals
     //Q_OBJECT
 
     public:

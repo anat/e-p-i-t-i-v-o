@@ -1,4 +1,5 @@
 #include "PlayerVM.hpp"
+#include "../libview/playlistwidget.hpp"
 #include <stdint.h>
 #include <iostream>
 namespace vm
@@ -105,6 +106,7 @@ namespace vm
         if (!buff)
         {
           std::cout << "quit playing -> no buff" << std::endl;
+          PlayListWidget::GetInstance()->PlayNext();
           _isStop = true;
           return ;
         }
@@ -123,6 +125,7 @@ namespace vm
         if (nFrame.isNull())
         {
           std::cout << "quit playing -> no frame" << std::endl;
+          PlayListWidget::GetInstance()->PlayNext();
           _isStop = true;
           return ;
         }

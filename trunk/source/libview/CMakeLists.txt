@@ -37,6 +37,7 @@ QT4_ADD_RESOURCES(rc_generated ${resources})
 
 INCLUDE_DIRECTORIES(
 	${CMAKE_SOURCE_DIR}/source
+        ${CMAKE_SOURCE_DIR}/source/libvm
 	${CMAKE_CURRENT_BINARY_DIR}
 )
 

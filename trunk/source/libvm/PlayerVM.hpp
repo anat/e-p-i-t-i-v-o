@@ -23,6 +23,8 @@ namespace vm
     //TODO uncomment if slot or signals
     //Q_OBJECT
 
+      public slots:
+
  public:
     static PlayerVM* GetInstance();
     static void DelInstance();
@@ -36,8 +38,6 @@ namespace vm
     void Pause();
 
     void setFilepath(QString const &);
-
-  protected:
 
   private:
     static PlayerVM* _instance;
@@ -56,6 +56,8 @@ namespace vm
     QString _recordFilepath;
     MediaFile* _record;
     VideoCodec * _codec;
+ // signals:
+   // void endPlaying();
   };
 }
 #endif // !__PLAYERVM_HPP__

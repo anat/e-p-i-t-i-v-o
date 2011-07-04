@@ -18,13 +18,15 @@ public:
     ~PlayListWidget();
     static PlayListWidget* GetInstance();
     static void DelInstance();
-    std::list<std::string> paths;
-    std::list<std::string> files;
-    std::string currentPlayListPath;
+    void PlayNext();
 private:
     static PlayListWidget* _instance;
     Ui::PlayListWidget *ui;
     void listvideos();
+    std::list<std::string> paths;
+    std::list<std::string> files;
+    std::string currentPlayListPath;
+    int currentRow;
 public slots:
     void addNewFolder();
     void addToPlayList();
