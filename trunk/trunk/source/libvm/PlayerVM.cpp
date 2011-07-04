@@ -78,7 +78,7 @@ namespace vm
     }
   }
 
-  void PlayerVM::Play()
+  void PlayerVM::Play(int followPlayList = 0)
   {
     int tmpCount;
     uint8_t tmpSwap;
@@ -106,8 +106,10 @@ namespace vm
         if (!buff)
         {
           std::cout << "quit playing -> no buff" << std::endl;
-          PlayListWidget::GetInstance()->PlayNext();
           _isStop = true;
+          this->Stop();
+          if (followPlayList)
+            PlayListWidget::GetInstance()->PlayNext();
           return ;
         }
 
@@ -125,8 +127,10 @@ namespace vm
         if (nFrame.isNull())
         {
           std::cout << "quit playing -> no frame" << std::endl;
-          PlayListWidget::GetInstance()->PlayNext();
           _isStop = true;
+          this->Stop();
+          if (followPlayList)
+              PlayListWidget::GetInstance()->PlayNext();
           return ;
         }
         nFrame.scaled(_surface->size());
@@ -148,6 +152,7 @@ namespace vm
          QCoreApplication::sendPostedEvents();
         }
     }
+
   }
 
   void PlayerVM::Stop()

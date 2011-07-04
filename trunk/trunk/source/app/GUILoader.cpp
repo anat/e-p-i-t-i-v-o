@@ -15,6 +15,7 @@ GUILoader::GUILoader(int & argc, char ** argv) :
 
 	_mainVM = vm::MainWindowVM::GetInstance();
 	_centralVM = vm::CentralVM::GetInstance();
+        _centralView = CentralView::GetInstance();
 	_cameraVM = vm::CameraVM::GetInstance();
 	_playerVM = vm::PlayerVM::GetInstance();
         _playListVM = PlayListWidget::GetInstance();

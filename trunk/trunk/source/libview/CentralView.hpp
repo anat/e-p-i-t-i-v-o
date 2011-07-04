@@ -7,7 +7,7 @@
 #include <QString>
 
 #include <iostream>
-
+#include <string>
 #include "CentralView.hpp"
 #include "libvm/CentralVM.hpp"
 #include "CameraView.hpp"
@@ -26,6 +26,9 @@ class CentralView : public QWidget
   public:
     explicit CentralView(QWidget *parent = 0);
     ~CentralView();
+    static CentralView* GetInstance();
+    static void DelInstance();
+    void LoadVideo(std::string path);
 
     public slots:
     void OpenFile();
@@ -38,7 +41,9 @@ class CentralView : public QWidget
     void setStoppedMediaState();
 
 
-  private:
+  public:
+    void setShit();
+    static CentralView* _instance;
     Ui::CentralView *ui;
 
     vm::CentralVM* _vm;

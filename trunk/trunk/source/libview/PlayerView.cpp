@@ -18,7 +18,7 @@ PlayerView::~PlayerView()
 
 void PlayerView::Play()
 {
-  _vm->Play();
+  _vm->Play(0);
 }
 
 void PlayerView::Pause()

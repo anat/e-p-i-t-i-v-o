@@ -9,6 +9,7 @@
 # include "libvm/CameraVM.hpp"
 # include "libvm/PlayerVM.hpp"
 # include "libview/playlistwidget.hpp"
+# include "CentralView.hpp"
 
 class GUILoader : public QApplication
 {
@@ -25,6 +26,7 @@ class GUILoader : public QApplication
     vm::CentralVM* _centralVM;
     vm::CameraVM* _cameraVM;
     vm::PlayerVM* _playerVM;
+    CentralView* _centralView;
     PlayListWidget* _playListVM;
 };
 

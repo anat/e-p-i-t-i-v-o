@@ -19,7 +19,11 @@ SET(sources
 	MediaFile.cpp
 )
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/source)
+INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/source
+    ${CMAKE_SOURCE_DIR}/source/libview
+    ${CMAKE_SOURCE_DIR}/source/libvm
+)
 
 SET(QT_USE_QTMAIN TRUE)
 INCLUDE(${QT_USE_FILE})

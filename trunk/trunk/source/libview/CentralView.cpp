@@ -1,6 +1,8 @@
 #include "CentralView.hpp"
 #include "ui_CentralView.h"
 #include "playlistwidget.hpp"
+CentralView *CentralView::_instance = 0;
+
 CentralView::CentralView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CentralView),
@@ -10,6 +12,19 @@ CentralView::CentralView(QWidget *parent) :
   _vm = vm::CentralVM::GetInstance();
 
   _isPaused = false;
+}
+
+CentralView* CentralView::GetInstance()
+{
+    if (!_instance)
+        _instance = new CentralView;
+    return _instance;
+}
+
+void CentralView::DelInstance()
+{
+    if (_instance)
+        delete _instance;
 }
 
 CentralView::~CentralView()
@@ -28,19 +43,29 @@ void CentralView::OpenFile()
       homePath,
       tr("Epitivo file (*.epitivo)")
       );
-  if (fileName.size() > 0)
-  {
-    if (ui->centralContainer->count() > 0)
-    {
-      this->clearPlayerView();
-      this->clearCameraView();
-    }
-    this->createPlayerView();
-    _playerView->setFilepath(fileName);
-    ui->centralContainer->addWidget(_playerView);
-  }
+  this->LoadVideo(fileName.toStdString());
 }
 
+void CentralView::LoadVideo(std::string path)
+{
+    std::cout << "Loading " << path << std::endl;
+    if (path.size() > 0)
+    {
+      if (ui->centralContainer->count() > 0)
+      {
+        this->clearPlayerView();
+        this->clearCameraView();
+      }
+      this->createPlayerView();
+      _playerView->setFilepath(path.c_str());
+      ui->centralContainer->addWidget(_playerView);
+    }
+}
+
+
+
+void CentralView::setShit()
+         { ui->centralContainer->addWidget(_playerView);}
 void CentralView::OpenCameraDevice()
 {
   if (ui->centralContainer->count() > 0)

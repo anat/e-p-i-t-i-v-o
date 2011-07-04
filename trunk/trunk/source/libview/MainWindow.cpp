@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     _vm(vm::MainWindowVM::GetInstance()),
-    _centralView(new CentralView)
+    _centralView(CentralView::GetInstance())
 {
   ui->setupUi(this);
   
@@ -42,7 +42,9 @@ void MainWindow::appExit()
 CentralView* MainWindow::createCentralView()
 {
   if (_centralView == 0)
-    _centralView = new CentralView;
+    {
+      _centralView = CentralView::GetInstance();
+  }
   return _centralView;
 }
 
