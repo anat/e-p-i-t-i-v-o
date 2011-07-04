@@ -169,7 +169,7 @@ namespace vm
           }
           QApplication::processEvents();
            QCoreApplication::sendPostedEvents();
-          cvWaitKey();	  
+          //cvWaitKey();	  
           QApplication::processEvents();
            QCoreApplication::sendPostedEvents();
         }
