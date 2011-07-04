@@ -61,6 +61,7 @@ namespace vm
     bool _hasBeenPause;
     bool _pushForever;
     unsigned int _firstPauseFrame;
+    bool _anotherPause;
     std::queue</*std::pair<int, uint8_t*>*/uint8_t * >   _cachedEncFrames;
     QLabel * _surface;
 
