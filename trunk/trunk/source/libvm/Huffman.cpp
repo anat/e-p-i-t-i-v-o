@@ -128,10 +128,15 @@ void            Huffman::createTree(std::map<uint8_t, int> & assoc)
                 new Node(zero, n);
                 continue;
             }
+            if (nodes.empty())
+            {
+              new Node(zero, n);
+              continue;
+            }
         }
-        if (nodes.empty())
+        else if (nodes.empty())
         {
-          std::cout << "Special Case" << std::endl;
+          std::cout << "You are DEAD MOTHERFUCKER" << std::endl;
           exit(1);
         }
         Node * one = nodes.front();
