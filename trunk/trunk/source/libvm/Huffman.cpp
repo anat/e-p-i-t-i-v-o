@@ -130,8 +130,11 @@ void            Huffman::createTree(std::map<uint8_t, int> & assoc)
                 continue;
             }
             // unoptimized case (rare)
-            new Node(zero, n);
-            continue;
+            if (nodes.empty())
+            {
+              new Node(zero, n);
+              continue;
+            }
          }
         Node * one = nodes.front();
         nodes.pop();
