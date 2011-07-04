@@ -3,8 +3,8 @@
 #include "QFileDialog"
 #include <QListWidgetItem>
 #include <fstream>
-#include <PlayerVM.hpp>
-#include <CentralView.hpp>
+#include "PlayerVM.hpp"
+#include "CentralView.hpp"
 
 #define LIBRARY_FILE "videoLibrary"
 PlayListWidget *PlayListWidget::_instance = 0;

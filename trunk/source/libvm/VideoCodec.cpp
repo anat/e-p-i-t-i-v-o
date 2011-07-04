@@ -373,6 +373,7 @@ uint32_t VideoCodec::encode(uint8_t *img)
   std::cout << "AVANT COMP [3]=" <<((unsigned int*)_result)[3] << std::endl;
   std::cout << std::endl;*/
 
+  printf("huffman.compress(%p, %d);\n", _result, _buffsize);
   huffman.compress(_result, _buffsize);
   ::memcpy(_result, huffman.getBuffer(), (_buffsize = huffman.getSize()));
   std::cout << "Buffer size (Huff): " << _buffsize << std::endl;  
