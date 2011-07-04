@@ -115,7 +115,7 @@ void            Huffman::createTree(std::map<uint8_t, int> & assoc)
         leafNodes[current->value] = current;
         ++itr;
     }
-    while (nodes.size())
+    while (!nodes.empty())
     {
         Node * zero = nodes.front();
         nodes.pop();
@@ -128,6 +128,11 @@ void            Huffman::createTree(std::map<uint8_t, int> & assoc)
                 new Node(zero, n);
                 continue;
             }
+        }
+        if (nodes.empty())
+        {
+          std::cout << "Special Case" << std::endl;
+          exit(1);
         }
         Node * one = nodes.front();
         nodes.pop();
