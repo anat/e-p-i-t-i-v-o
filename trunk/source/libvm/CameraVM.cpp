@@ -88,8 +88,8 @@ namespace vm
 		codec->nextFrameIsKeyframe();
 		_firstPauseFrame++;
 	      }
-	    if (!_isPauseRecording && !_anotherPause)
-	      _firstPauseFrame = 0;
+	    //if (!_isRecording && !_isPauseRecording && !_anotherPause)
+	    //_firstPauseFrame = 0;
 	    
             // dans tt les cas capture + enc + ecriture frame courante
             int buffSize = codec->encode((uint8_t *) frame->imageData);
@@ -271,6 +271,7 @@ namespace vm
       _record = new MediaFile(homePath+"/.temp.epitivo", true, Video);
       _record->Start();
       _isRecording = true;
+      _firstPauseFrame = 0;
     }
     else if (_isPauseRecording)
     {
@@ -301,7 +302,10 @@ namespace vm
       }
     _pushForever = true;
     if (_anotherPause == false)
-      _anotherPause = true;
+      {
+	_anotherPause = true;
+	_firstPauseFrame = 0;
+      }
     else
       _anotherPause = false;
   }
