@@ -20,6 +20,7 @@ namespace vm
     _isPauseRecording = false;
     _hasBeenPause = false;
     _pushForever = false;
+    _anotherPause = false;
   }
   CameraVM::~CameraVM()
   {
@@ -74,7 +75,7 @@ namespace vm
           if(!frame)
             break;
 
-          if (_isRecording)
+          if (_isRecording || _pushForever)
           {
 	    uint8_t * buff2;//  =  new uint8_t[640 * 480 * 3];
 	    uint8_t * buff3  =  new uint8_t[640 * 480 * 3];
@@ -82,14 +83,14 @@ namespace vm
 	    //uint8_t * buff5  =  new uint8_t[640 * 480 * 3];
 	    uint32_t bsize;
 
-	    if (_isPauseRecording && !_firstPauseFrame)
+	    if ((_isRecording || _anotherPause) && !_firstPauseFrame)
 	      {
 		codec->nextFrameIsKeyframe();
 		_firstPauseFrame++;
 	      }
-	    if (!_isPauseRecording)
+	    if (!_isPauseRecording && !_anotherPause)
 	      _firstPauseFrame = 0;
-
+	    
             // dans tt les cas capture + enc + ecriture frame courante
             int buffSize = codec->encode((uint8_t *) frame->imageData);
 	    //printf("memcpy(%p, %p, %d);\n", buff3, codec->getProcessedImg(), buffSize);
@@ -99,7 +100,8 @@ namespace vm
 	    //printf("memcopy ok\n");
 
 	    //std::cout << "Addvideo() : " << buffSize << std::endl;
-            _record->AddVideoFrame(buff3, buffSize);
+	    if (_isRecording)
+	      _record->AddVideoFrame(buff3, buffSize);
 
 	    /*            if (_isPauseRecording)
             {
@@ -111,14 +113,14 @@ namespace vm
 
             }
             else*/
-	    if (_isPauseRecording || _pushForever)
+	    if (/*_isPauseRecording ||*/ _pushForever)
 	      {
 		_pushForever = true;
 		//std::cout << "Pause And Push !!!" << std::endl;
 		_cachedEncFrames.push(buff3);
 	      }
 	    std::cout << "Queuesize: " << _cachedEncFrames.size() << std::endl;
-	    if (!_isPauseRecording)
+	    if (/*!_isPauseRecording &&*/ !_anotherPause)
             {
               // + capture + encodage frame courante
               if (_cachedEncFrames.size() > 0)
@@ -132,6 +134,15 @@ namespace vm
 		//printf("decode(%p)\n", buff4);
                 codec->decode(buff4); // BUFFER DECOMP
 		//std::cout << "DISPLAY" << std::endl;
+
+		uint8_t ctmp;
+		for (int tmpy = 0; tmpy < 640*480*3; tmpy += 3)
+		  {
+		    ctmp = buff4[tmpy+2];
+		    buff4[tmpy+2] = buff4[tmpy];
+		    buff4[tmpy] = ctmp;
+		  }
+
                 QImage nFrame(buff4, 640, 480, QImage::Format_RGB888 );
 
                 nFrame.scaled(_surface->size());
@@ -283,8 +294,16 @@ namespace vm
   void CameraVM::PauseRecCam()
   {
     std::cout << "Pause recording" << std::endl;
-    _isPauseRecording = true;
-    _hasBeenPause = true;
+    if (_isRecording)
+      {
+	_isPauseRecording = true;
+	_hasBeenPause = true;
+      }
+    _pushForever = true;
+    if (_anotherPause == false)
+      _anotherPause = true;
+    else
+      _anotherPause = false;
   }
 
 std::set<int> const & CameraVM::getCamDevices() 
