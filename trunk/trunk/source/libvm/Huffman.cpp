@@ -123,22 +123,16 @@ void            Huffman::createTree(std::map<uint8_t, int> & assoc)
         Node* n;
         if ((n = this->getMinDaddy()))
         {
-            if (zero->n > n->n)
+            // optimized case
+            if (zero->n > n->n) 
             {
                 new Node(zero, n);
                 continue;
             }
-            if (nodes.empty())
-            {
-              new Node(zero, n);
-              continue;
-            }
-        }
-        else if (nodes.empty())
-        {
-          std::cout << "You are DEAD MOTHERFUCKER" << std::endl;
-          exit(1);
-        }
+            // unoptimized case (rare)
+            new Node(zero, n);
+            continue;
+         }
         Node * one = nodes.front();
         nodes.pop();
         new Node(zero, one);
