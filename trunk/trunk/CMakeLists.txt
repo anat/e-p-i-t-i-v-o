@@ -13,3 +13,6 @@ FIND_PACKAGE(OpenCV 	REQUIRED)
 ADD_SUBDIRECTORY(source/libvm)
 ADD_SUBDIRECTORY(source/libview)
 ADD_SUBDIRECTORY(source/app)
+
+#Optim
+set(CMAKE_CXX_FLAGS "-O3")

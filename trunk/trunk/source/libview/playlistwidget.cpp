@@ -3,14 +3,15 @@
 #include "QFileDialog"
 #include <QListWidgetItem>
 #include <fstream>
-#include <../libvm/PlayerVM.hpp>
+#include <PlayerVM.hpp>
 #define LIBRARY_FILE "videoLibrary"
 PlayListWidget *PlayListWidget::_instance = 0;
 
 PlayListWidget::PlayListWidget(QWidget *parent) :
         QWidget(parent),
         ui(new Ui::PlayListWidget),
-        currentPlayListPath("")
+        currentPlayListPath(""),
+        currentRow(0)
 {
     ui->setupUi(this);
     this->listvideos();
@@ -131,8 +132,20 @@ void PlayListWidget::startFromIndex(QModelIndex i)
 {
     if (this->ui->myList->currentItem())
     {
+        this->currentRow = this->ui->currentList->currentRow();
         vm::PlayerVM* p = vm::PlayerVM::GetInstance();
         p->setFilepath(this->ui->myList->currentItem()->text());
+        p->Play();
+    }
+}
+
+void PlayListWidget::PlayNext()
+{
+    if (this->ui->currentList->item(currentRow + 1))
+    {
+        currentRow++;
+        vm::PlayerVM* p = vm::PlayerVM::GetInstance();
+        p->setFilepath(this->ui->currentList->item(currentRow)->text().toStdString().c_str()); // signals:
         p->Play();
     }
 }
