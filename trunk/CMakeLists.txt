@@ -15,4 +15,4 @@ ADD_SUBDIRECTORY(source/libview)
 ADD_SUBDIRECTORY(source/app)
 
 #Optim
-set(CMAKE_CXX_FLAGS "-O3")
+# set(CMAKE_CXX_FLAGS "-O3")

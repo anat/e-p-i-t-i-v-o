@@ -4,6 +4,8 @@
 #include <QListWidgetItem>
 #include <fstream>
 #include <PlayerVM.hpp>
+#include <CentralView.hpp>
+
 #define LIBRARY_FILE "videoLibrary"
 PlayListWidget *PlayListWidget::_instance = 0;
 
@@ -21,6 +23,8 @@ PlayListWidget::PlayListWidget(QWidget *parent) :
     QObject::connect(this->ui->btnSave, SIGNAL(clicked()), this, SLOT(savePlayList()));
     QObject::connect(this->ui->btnDelete, SIGNAL(clicked()), this, SLOT(deleteFromPlayList()));
     QObject::connect(this->ui->currentList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(startFromIndex(QModelIndex)));
+    QObject::connect(this->ui->myList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(playOne(QModelIndex)));
+
 }
 
 PlayListWidget::~PlayListWidget()
@@ -85,8 +89,8 @@ void PlayListWidget::addToPlayList()
 
 void PlayListWidget::deleteFromPlayList()
 {
-    if (this->ui->myList->currentItem())
-        delete this->ui->myList->currentItem();//        this->ui->currentList->removeItemWidget(this->ui->myList->currentItem());
+    if (this->ui->currentList->currentItem())
+        delete this->ui->currentList->currentItem();//        this->ui->currentList->removeItemWidget(this->ui->myList->currentItem());
 }
 
 void PlayListWidget::loadPlayList()
@@ -130,22 +134,37 @@ void PlayListWidget::savePlayList()
 
 void PlayListWidget::startFromIndex(QModelIndex i)
 {
-    if (this->ui->myList->currentItem())
+    if (this->ui->currentList->currentItem())
     {
         this->currentRow = this->ui->currentList->currentRow();
         vm::PlayerVM* p = vm::PlayerVM::GetInstance();
-        p->setFilepath(this->ui->myList->currentItem()->text());
-        p->Play();
+        p->setFilepath(this->ui->currentList->currentItem()->text());
+        CentralView::GetInstance()->LoadVideo(this->ui->currentList->currentItem()->text().toStdString());
+        p->Play(1);
     }
 }
+
+void PlayListWidget::playOne(QModelIndex i)
+{
+    if (this->ui->myList->currentItem())
+    {
+        vm::PlayerVM* p = vm::PlayerVM::GetInstance();
+        p->setFilepath(this->ui->myList->currentItem()->text());
+        CentralView::GetInstance()->LoadVideo(this->ui->myList->currentItem()->text().toStdString());
+        p->Play(0);
+    }
+}
+
 
 void PlayListWidget::PlayNext()
 {
     if (this->ui->currentList->item(currentRow + 1))
     {
         currentRow++;
+        this->ui->currentList->setCurrentRow(currentRow);
         vm::PlayerVM* p = vm::PlayerVM::GetInstance();
-        p->setFilepath(this->ui->currentList->item(currentRow)->text().toStdString().c_str()); // signals:
-        p->Play();
+        p->setFilepath(this->ui->currentList->item(currentRow)->text().toStdString().c_str());
+        CentralView::GetInstance()->LoadVideo(this->ui->currentList->item(currentRow)->text().toStdString());
+        p->Play(1);
     }
 }

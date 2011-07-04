@@ -33,10 +33,10 @@ namespace vm
 
     void SliderChangeValue();
 
-    void Play();
+    void Play(int);
     void Stop();
     void Pause();
-
+ bool _isStop;
     void setFilepath(QString const &);
 
   private:
@@ -46,7 +46,7 @@ namespace vm
     ~PlayerVM();
 
     IplImage* _iplImg;
-    bool _isStop;
+
     bool _isPaused;
 
     QLabel * _surface;
@@ -56,8 +56,6 @@ namespace vm
     QString _recordFilepath;
     MediaFile* _record;
     VideoCodec * _codec;
- // signals:
-   // void endPlaying();
   };
 }
 #endif // !__PLAYERVM_HPP__

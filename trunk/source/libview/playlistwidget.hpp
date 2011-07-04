@@ -34,7 +34,7 @@ public slots:
     void savePlayList();
     void deleteFromPlayList();
     void startFromIndex(QModelIndex i);
-
+    void playOne(QModelIndex i);
 };
 
 #endif // PLAYLISTWIDGET_H
