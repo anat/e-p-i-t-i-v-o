@@ -33,6 +33,13 @@ public:
         zero->parent = (one->parent = this);
         n = zero->n + one->n;}
 
+  ~Node()
+    {
+      if (one) delete one;
+      if (zero) delete zero;
+    }
+
+
     Node* zero;
     Node* one;
     Node* parent;

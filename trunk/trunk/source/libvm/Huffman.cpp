@@ -56,6 +56,7 @@ void            Huffman::compress(uint8_t* buffer, int size)
     //std::cout << " compressedSize: " << bitWriter.getSize() << " rate: " << (bitWriter.getSize() * 100) / size << "/100" << std::endl;
 #endif
     bitWriter.deallocate();
+    delete allNodes.back();
 }
 
 
@@ -88,6 +89,7 @@ void            Huffman::uncompress(uint8_t* buffer)
         bitWriter.addByte(c);
         currentByte++;
     }
+    delete allNodes.back();
 }
 
 
