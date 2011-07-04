@@ -110,6 +110,7 @@ void VideoCodec::decode(uint8_t *img)
   printf("memcpy(%p, %p, %d)\n", _resultDec, tmp, size);*/
 
   ::memcpy(_resultDec, tmp, size);
+  delete tmp;
 
   /*std::cout << "APRES DECOMP2 [0]=" <<((unsigned int*)_resultDec)[0] << std::endl;
   std::cout << "APRES DECOMP2 [1]=" <<((unsigned int*)_resultDec)[1] << std::endl;
@@ -375,6 +376,7 @@ uint32_t VideoCodec::encode(uint8_t *img)
   huffman.compress(_result, _buffsize);
   ::memcpy(_result, huffman.getBuffer(), (_buffsize = huffman.getSize()));
   std::cout << "Buffer size (Huff): " << _buffsize << std::endl;  
+  delete huffman.getBuffer();
 
   /*std::cout << "APRES COMP [0]=" <<((unsigned int*)_result)[0] << std::endl;
   std::cout << "APRES COMP [1]=" <<((unsigned int*)_result)[1] << std::endl;
