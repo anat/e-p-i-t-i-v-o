@@ -1,0 +1,1 @@
+An experimental application able to encode media from web cam and to decode it.
